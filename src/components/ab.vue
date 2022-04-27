@@ -4,12 +4,19 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    console.log(11);
-    
+  props: {
+    visiable: {
+      type: Boolean,
+    },
   },
-})
+  setup(props, context) {
+    console.log(11);
+    console.log(props);
+
+    console.log(context);
+  },
+});
 </script>
