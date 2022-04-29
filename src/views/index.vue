@@ -2,7 +2,7 @@
   <h1>{{ msg }}</h1>
   <h2>{{ num }}</h2>
   <button @click="addHandle">+1</button>
-  <div class="person">
+  <div class="person" ref="personRef">
     <div>name: {{ person.name }}</div>
     <div>age: {{ person.age }}</div>
     <button @click="updatePersonInfo">update</button>
@@ -70,12 +70,11 @@ export default defineComponent({
     const vv1 = ref<HTMLElement | null>(null);
     const ab1 = ref<HTMLElement | null>(null);
 
-    onMounted(() => {
-      let ii = document.getElementById("ii") as HTMLInputElement;
-      console.log("mounted");
-      console.log(ii);
+    const personRef = ref<HTMLElement | null>(null);
 
+    onMounted(() => {
       console.log(vv1.value);
+      console.log(personRef.value);
       console.log(ab1.value);
     });
 
@@ -88,6 +87,9 @@ export default defineComponent({
       pickHandle,
       time,
       state,
+      vv1,
+      ab1,
+      personRef,
       ...stateAsRefs,
     };
   },
