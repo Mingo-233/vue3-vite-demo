@@ -34,9 +34,7 @@ import {
 import Ab from "@/components/ab.vue";
 export default defineComponent({
   setup() {
-    console.log("setip");
     const num = ref(1);
-
     const addHandle = () => {
       num.value++;
     };
@@ -65,18 +63,11 @@ export default defineComponent({
       bar: "b",
     });
     const stateAsRefs = toRefs(state);
-    console.log(stateAsRefs);
+    // console.log(stateAsRefs);
 
     const vv1 = ref<HTMLElement | null>(null);
-    const ab1 = ref<HTMLElement | null>(null);
 
-    const personRef = ref<HTMLElement | null>(null);
-
-    onMounted(() => {
-      console.log(vv1.value);
-      console.log(personRef.value);
-      console.log(ab1.value);
-    });
+    onMounted(() => {});
 
     return {
       msg: "hello world",
@@ -88,8 +79,6 @@ export default defineComponent({
       time,
       state,
       vv1,
-      ab1,
-      personRef,
       ...stateAsRefs,
     };
   },

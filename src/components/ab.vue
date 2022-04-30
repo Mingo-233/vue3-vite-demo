@@ -17,8 +17,8 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    console.log(props);
-    console.log(context);
+    // console.log(props);
+    // console.log(context);
     const emitHandle = () => {
       context.emit("pick");
     };
