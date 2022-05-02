@@ -1,7 +1,6 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
   <div class="home-btn" id="dragbtn" v-drag @click="backHome">home</div>
-
   <router-view />
 </template>
 
@@ -20,6 +19,7 @@ const backHome = () => {
 <style lang="less" scoped>
 .home-btn {
   position: fixed;
+  z-index: 10;
   top: 0;
   right: 0;
   width: 100px;

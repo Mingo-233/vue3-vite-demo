@@ -1,6 +1,3 @@
-// import { createApp } from "vue";
-// const app = createApp({});
-// import app from "@/main.ts";
 const directiveHandle = (v: any) => {
   v.directive("drag", {
     mounted: function (el: HTMLElement) {

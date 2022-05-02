@@ -1,10 +1,12 @@
 <template>
   <div class="setup">
     <h1 v-if="show" @click="handle" ref="h1">This is setup</h1>
+    <son></son>
   </div>
 </template>
 
 <script setup lang="ts">
+import son from "@/components/son.vue";
 import { onMounted, ref, defineEmits } from "vue";
 const Props = defineProps({
   show: {

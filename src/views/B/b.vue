@@ -9,9 +9,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, Ref, ref, getCurrentInstance, shallowRef } from "vue";
+import {
+  onMounted,
+  Ref,
+  ref,
+  getCurrentInstance,
+  shallowRef,
+  provide,
+} from "vue";
 import setupVue from "@/components/setup.vue";
-const msg = ref("messag e");
+const msg = ref("message by b ");
 const show = ref(true);
 interface sonComponentDate {
   msg: String;
@@ -33,6 +40,9 @@ let bb = shallowRef("xixi");
 bb.value = "bb-change1 ";
 // console.log(bb);
 
+provide("provideInfo", {
+  msg: "message by b",
+});
 onMounted(() => {
   //   console.log(setupRef);
   //   console.log(setupRef.value);
