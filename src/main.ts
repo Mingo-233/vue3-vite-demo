@@ -1,5 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
 import router from "./router";
+const app = createApp(App);
+import { directiveHandle } from "@/directive/index.js";
+directiveHandle(app);
 
-createApp(App).use(router).mount('#app')
+app.use(router).mount("#app");
+
+// export default app;

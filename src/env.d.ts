@@ -8,3 +8,4 @@ declare module "*.vue" {
 }
 
 declare module "@/router/auto.js";
+declare module "@/directive/*.js";

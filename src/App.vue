@@ -1,26 +1,33 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+  <div class="home-btn" id="dragbtn" v-drag @click="backHome">home</div>
 
   <router-view />
-
-  <!-- <about msg="Hello Vue 3 + TypeScript + Vite" /> -->
 </template>
 
 <script setup lang="ts">
 import { defineComponent } from "vue";
-// import about from "@/components/ab.vue";
-import routers from "@/router/auto.js";
-defineComponent({
-  name: "Home",
-  components: {
-    // about,
-  },
-});
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-console.log(routers);
+const backHome = () => {
+  let isClick = document.getElementById("dragbtn")!.getAttribute("data-flag");
+  if (isClick !== "true") return;
+  router.push({ path: "/" });
+};
 </script>
 
-<style>
-#app {
+<style lang="less" scoped>
+.home-btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #fff;
+  background: paleturquoise;
+  cursor: pointer;
 }
 </style>

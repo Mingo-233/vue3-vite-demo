@@ -1,89 +1,47 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <h2>{{ num }}</h2>
-  <button @click="addHandle">+1</button>
-  <div class="person" ref="personRef">
-    <div>name: {{ person.name }}</div>
-    <div>age: {{ person.age }}</div>
-    <button @click="updatePersonInfo">update</button>
-  </div>
-  <div>
-    组件
-    <Ab :visiable="true" @pick="pickHandle" ref="ab1"></Ab>
-  </div>
-
-  <div>time - {{ time }}</div>
-
-  <div>statesAsRefs -- {{ foo }}</div>
-  {{ state }}
-
-  <div>
-    <input type="text" name="" id="ii" ref="vv1" />
+  <div class="home">
+    <div class="route" v-for="item in routers" @click="go(item)">
+      {{ item.path }}
+    </div>
   </div>
 </template>
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  toRefs,
-  watch,
-} from "vue";
-import Ab from "@/components/ab.vue";
-export default defineComponent({
-  setup() {
-    const num = ref(1);
-    const addHandle = () => {
-      num.value++;
-    };
 
-    const person = reactive({ name: "mm", age: 18 });
-    const updatePersonInfo = () => {
-      person.age = ~~(Math.random() * 10);
-    };
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { useRouter, RouteRecordRaw } from "vue-router";
 
-    const pickHandle = () => {
-      console.log("pick 触发了");
-    };
+import routers from "@/router/auto.js";
+const router = useRouter();
 
-    const time = computed(() => Date.now());
-
-    watch(
-      num,
-      (newValue, oldValue) => {
-        console.log(newValue, oldValue);
-      },
-      { immediate: true, deep: true }
-    );
-
-    const state = reactive({
-      foo: "a",
-      bar: "b",
-    });
-    const stateAsRefs = toRefs(state);
-    // console.log(stateAsRefs);
-
-    const vv1 = ref<HTMLElement | null>(null);
-
-    onMounted(() => {});
-
-    return {
-      msg: "hello world",
-      num,
-      addHandle,
-      person,
-      updatePersonInfo,
-      pickHandle,
-      time,
-      state,
-      vv1,
-      ...stateAsRefs,
-    };
-  },
-  components: {
-    Ab,
-  },
-});
+const go = (r: RouteRecordRaw) => {
+  router.push({ path: r.path });
+};
+onMounted(() => {});
 </script>
+
+<style lang="less" scoped>
+.home {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(5, 20%);
+  // grid-template-rows: 200px;
+  grid-row-gap: 30px;
+  .route {
+    background-image: linear-gradient(
+        90deg,
+        rgba(0, 255, 0, 0.5),
+        rgba(7, 52, 7, 0.5)
+      ),
+      linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5)),
+      url("@/assets/logo.png");
+    background-position: bottom;
+    width: 200px;
+    height: 100px;
+    line-height: 100px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+</style>
