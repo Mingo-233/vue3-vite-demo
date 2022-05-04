@@ -6,9 +6,12 @@
     @postMessageBySon="reciveMessage"
   ></setupVue>
   <div></div>
+  <button @click="handle">handle</button>
+  <h1>过渡 {{ Math.round(output) }}</h1>
 </template>
 
 <script setup lang="ts">
+import { useTransition, TransitionPresets } from "@vueuse/core";
 import {
   onMounted,
   Ref,
@@ -27,6 +30,9 @@ const setupRef = ref(null);
 // const setupRef = ref(null);
 const handle = () => {
   console.log("handle");
+  const obj = {};
+  // obj.fn();
+  source.value = 5000;
 };
 
 const reciveMessage = (a: string) => {
@@ -43,6 +49,14 @@ bb.value = "bb-change1 ";
 provide("provideInfo", {
   msg: "message by b",
 });
+
+const source = ref(0);
+
+const output = useTransition(source, {
+  duration: 3000,
+  transition: TransitionPresets.easeOutExpo,
+});
+
 onMounted(() => {
   //   console.log(setupRef);
   //   console.log(setupRef.value);
