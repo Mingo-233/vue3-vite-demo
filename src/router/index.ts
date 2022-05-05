@@ -31,6 +31,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "todo" */ "../views/TodoList/index.vue"),
   },
+  {
+    path: "/design/stateMode",
+    name: "stateMode",
+    component: () =>
+      import(/* webpackChunkName: "design" */ "../views/design/stateMode.vue"),
+  },
 ];
 
 const router = createRouter({
