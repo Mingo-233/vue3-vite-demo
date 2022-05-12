@@ -1,17 +1,25 @@
 import { defineStore } from "pinia";
-
-interface List {
+// import { useGstyleStore } from "@/store/todo";
+// const styleStore = useGstyleStore();
+interface ListObj {
   id: number;
   done: boolean;
   thing: string;
 }
+
+type ListType = ListObj[];
 export const useTodoStore = defineStore({
   id: "todo",
   state: () => ({
     list: [
       { id: 1, done: false, thing: "learn pinia" },
       { id: 2, done: true, thing: "play lol" },
-    ],
+    ] as ListType,
+    todoName: "note",
+    todoListInfo: {
+      color: "red",
+      fontSize: "20px",
+    },
   }),
   getters: {},
   actions: {

@@ -1,5 +1,8 @@
 <template>
   <div class="todo-list">
+    <h1 :style="{ color: todoListInfo.color, fontSize: todoListInfo.fontSize }">
+      todo Name: {{ todoName }}
+    </h1>
     <Field
       v-model="inputValue"
       label="文本"
@@ -17,16 +20,32 @@
         <Button type="danger" @click="remove(todo.id)" size="mini">删除</Button>
       </Checkbox>
     </CheckboxGroup>
+
+    <button @click="changeName">change name</button>
+    <button @click="changeStyle">change style</button>
+
+    <hr />
+    <todoSon />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, reactive, toRaw } from "vue";
+import {
+  onMounted,
+  ref,
+  computed,
+  reactive,
+  toRaw,
+  isRef,
+  isReactive,
+} from "vue";
 import { useTodoStore } from "@/store/todo";
 import { Checkbox, CheckboxGroup, Field, Button } from "vant";
 import { storeToRefs } from "pinia";
+import todoSon from "./components/todoSon.vue";
+import { isProxy } from "util/types";
 const todoStore = useTodoStore();
-const { list } = storeToRefs(todoStore);
+let { list, todoName, todoListInfo } = storeToRefs(todoStore);
 
 const f3 = computed(() => {
   let f = todoStore.list.filter((item) => item.done);
@@ -58,6 +77,19 @@ const remove = (id: number) => {
 
   console.log(checkedArray.value);
 };
+
+const changeName = () => {
+  // console.log(list);
+  todoName.value = "???";
+};
+const changeStyle = () => {
+  // todoListInfo.value.color = "green";
+  todoStore.todoListInfo = {
+    color: "blue",
+    fontSize: "30px",
+  };
+};
+
 onMounted(() => {
   console.log(checkedArray.value);
 });

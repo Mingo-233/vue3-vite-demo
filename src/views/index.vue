@@ -1,6 +1,11 @@
 <template>
   <div class="home">
-    <div class="route" v-for="item in routers" @click="go(item)">
+    <div
+      class="route"
+      v-for="item in routers"
+      :key="item.path"
+      @click="go(item)"
+    >
       {{ item.path }}
     </div>
   </div>
