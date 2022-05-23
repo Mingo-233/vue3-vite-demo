@@ -37,6 +37,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "design" */ "../views/design/stateMode.vue"),
   },
+  {
+    path: "/design/messageBox",
+    name: "messageBox",
+    component: () =>
+      import(/* webpackChunkName: "design" */ "../views/design/messageBox.vue"),
+  },
+  
 ];
 
 const router = createRouter({
