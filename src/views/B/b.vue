@@ -3,6 +3,7 @@
   <setupVue
     ref="setupRef"
     :show="show"
+    @click="clickHandle"
     @postMessageBySon="reciveMessage"
   ></setupVue>
   <div></div>
@@ -35,6 +36,9 @@ const handle = () => {
   source.value = 5000;
 };
 
+const clickHandle = () => {
+  console.log("clickHandle");
+};
 const reciveMessage = (a: string) => {
   console.log("reciveMessage");
   console.log(a);

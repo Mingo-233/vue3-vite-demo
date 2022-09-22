@@ -43,6 +43,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "design" */ "../views/design/messageBox.vue"),
   },
+    {
+    path: "/yanhua",
+    name: "yanhua",
+    component: () =>
+      import(/* webpackChunkName: "yanhua" */ "../views/yanhua/index.vue"),
+  },
   
 ];
 
