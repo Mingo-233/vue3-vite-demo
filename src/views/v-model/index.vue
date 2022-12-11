@@ -3,6 +3,7 @@
   <Son v-model="state.name" v-model:email="state.email"></Son>
   <Attrs id="root" class="test" name="张三" @confirm="handle" closeable></Attrs>
   {{ state }}
+  <hr />
 </template>
 
 <script setup lang="ts">
@@ -16,6 +17,10 @@ const state = reactive({
 const handle = () => {
   console.log("handle");
 };
+const obj = { name: "11" };
+
+const proxy = reactive([obj]);
+console.log(proxy.includes(proxy[0])); // false
 onMounted(() => {});
 </script>
 
