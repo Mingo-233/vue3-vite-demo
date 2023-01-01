@@ -55,7 +55,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "vmodel" */ "../views/v-model/index.vue"),
   },
-  
+  {
+    path: "/searchBar",
+    name: "searchBar",
+    component: () =>
+      import(/* webpackChunkName: "vmodel" */ "../views/searchBar/index.vue"),
+  },
 ];
 
 const router = createRouter({
