@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^8.4.1",
+    "ant-design-vue": "^3.2.15",
     "pinia": "^2.0.13",
     "vant": "^3.4.8",
     "vue": "^3.2.25",

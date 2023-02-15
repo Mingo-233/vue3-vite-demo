@@ -61,6 +61,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "vmodel" */ "../views/searchBar/index.vue"),
   },
+  {
+    path: "/hooksDemo",
+    name: "hooksDemo",
+    component: () =>
+      import(/* webpackChunkName: "vmodel" */ "../views/hooksDemo/index.vue"),
+  },
 ];
 
 const router = createRouter({
