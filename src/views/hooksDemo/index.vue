@@ -1,7 +1,8 @@
 <script setup name="DDemo" lang="ts">
 import { useFetchSelect } from "@/utils/selectHook";
 import { useAutoRequest } from "@/utils/loadingHook";
-
+import { useLogClick } from "@/utils/eventHook";
+import triggerEvent from "./triggerEvent.vue";
 //   模拟调用接口
 function getRemoteData() {
   return new Promise<any[]>((resolve, reject) => {
@@ -38,6 +39,17 @@ const selectBind = useFetchSelect({
 });
 
 const [loading, onSubmit] = useAutoRequest(getRemoteData);
+
+const { bindEvent, bindProps } = useLogClick();
+
+function reciver() {
+  console.log(arguments);
+
+  console.log("reciver");
+}
+const bindEvent2 = {
+  triggerA: reciver(),
+};
 </script>
 
 <template>
@@ -49,6 +61,13 @@ const [loading, onSubmit] = useAutoRequest(getRemoteData);
       loading: {{ loading }}
       <a-button :loading="loading" @click="onSubmit">提交</a-button>
     </div>
+    <div class="col">
+      log:
+      <a-tag v-on="bindEvent" v-bind="bindProps">log打印</a-tag>
+    </div>
+
+    <!-- <triggerEvent @trigger-a="reciver"></triggerEvent> -->
+    <triggerEvent v-on="bindEvent2"></triggerEvent>
   </div>
 </template>
 
