@@ -67,6 +67,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "vmodel" */ "../views/hooksDemo/index.vue"),
   },
+  {
+    path: "/stash",
+    name: "stash",
+    component: () =>
+      import(/* webpackChunkName: "stash" */ "../views/stash/index.vue"),
+  },
 ];
 
 const router = createRouter({

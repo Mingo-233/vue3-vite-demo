@@ -13,6 +13,11 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 6800,
+    headers: {
+      // "Access-Control-Allow-Origin": "*",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
   },
   define: {
     "process.env": {},
