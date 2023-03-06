@@ -17,7 +17,7 @@ import { useRouter, RouteRecordRaw } from "vue-router";
 
 import routers from "@/router/auto.js";
 const router = useRouter();
-
+console.log(import.meta);
 const go = (r: RouteRecordRaw) => {
   router.push({ path: r.path });
 };

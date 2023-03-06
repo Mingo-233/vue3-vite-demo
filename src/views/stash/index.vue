@@ -19,10 +19,24 @@ console.log(ffmpeg);
 
 async function transcode(e: any) {
   let files = e.target.files;
+  console.log(files);
+
   const { name } = files[0];
   await ffmpeg.load();
   ffmpeg.FS("writeFile", name, await fetchFile(files[0]));
-  await ffmpeg.run("-i", name, "output.mp4");
+  await ffmpeg.run(
+    "-i",
+    name,
+    "-c",
+    "copy",
+    "-row-mt",
+    "1",
+    "-r",
+    "60",
+    "-s",
+    `1920x1080`,
+    "output.mp4"
+  );
   const data = ffmpeg.FS("readFile", "output.mp4");
   console.log(data);
 
