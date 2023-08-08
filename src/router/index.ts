@@ -73,6 +73,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "stash" */ "../views/stash/index.vue"),
   },
+  {
+    path: "/suspense",
+    name: "suspense",
+    component: () =>
+      import(/* webpackChunkName: "suspense" */ "../views/suspense/index.vue"),
+  },
 ];
 
 const router = createRouter({
