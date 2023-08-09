@@ -1,17 +1,15 @@
 <template>
   <div>
     suspence
+    <button @click="show = !show">change</button>
     <Suspense
       @pending="pending"
       @fallback="fallback"
       @resolve="resolve"
-      :timeout="3000"
+      :timeout="0"
     >
-      <!-- <template #default>
-        <div>sleep</div>
-      </template> -->
-      <AsyncComp></AsyncComp>
-
+      <AsyncComp v-if="show"></AsyncComp>
+      <div v-else>AsyncComp else 项目</div>
       <template #fallback>
         <div>loading...</div>
       </template>
@@ -20,7 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, defineAsyncComponent } from "vue";
+import {
+  onMounted,
+  reactive,
+  ref,
+  defineAsyncComponent,
+  onErrorCaptured,
+} from "vue";
 import ErrorComponent from "./error.vue";
 import loadingComponent from "./loading.vue";
 const AsyncComp = defineAsyncComponent(() => import("./async.vue"));
@@ -38,7 +42,10 @@ const AsyncComp = defineAsyncComponent(() => import("./async.vue"));
 //   // 也会显示这里配置的报错组件，默认值是：Infinity
 //   timeout: 3000,
 // });
-const state = reactive({});
+const show = ref(false);
+onErrorCaptured((err) => {
+  console.log("onErrorCaptured", err);
+});
 function pending() {
   console.log(arguments);
   console.log("pending");

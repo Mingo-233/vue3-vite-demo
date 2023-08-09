@@ -12,7 +12,7 @@ function sleep(time: number) {
     }, time);
   });
 }
-await sleep(1000);
+await sleep(3000);
 </script>
 
 <style lang="less" scoped></style>
