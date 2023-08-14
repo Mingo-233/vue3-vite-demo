@@ -1,17 +1,34 @@
-<template>
-  <div>
-    stash
-    <Son class="b"></Son>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { onMounted, reactive, defineOptions } from "vue";
-import Son from "./son.vue";
-const state = reactive({});
+<script setup>
+import {
+  ref,
+  effectScope,
+  effect,
+  computed,
+  watch,
+  watchEffect,
+  reactive,
+  getCurrentScope,
+} from "vue";
+const scopeA = effectScope();
+const data = reactive({
+  num: {
+    step: 0,
+  },
+});
 function handle() {
-  console.log("handle");
+  data.num.step = Math.random();
+  console.log(data.num);
 }
+scopeA.run(() => {
+  const fn = () => {
+    let b = data.num.step + "9";
+    console.log("request", b);
+  };
+  effect(fn);
+});
 </script>
 
-<style lang="less" scoped></style>
+<template>
+  <div>data num {{ data.num.step }}</div>
+  <button @click="handle">bt</button>
+</template>
