@@ -25,9 +25,13 @@ const useEffect = () => {
   function changeVersion() {
     data.version = "v2.0." + Math.random();
   }
+  function scopeDestroy() {
+    scope.stop();
+  }
   return {
     changeVersion,
     version: computed(() => data.version),
+    scopeDestroy,
   };
 };
 export { useEffect };

@@ -85,6 +85,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "effect" */ "../views/effect/index.vue"),
   },
+  {
+    path: "/transition",
+    name: "transition",
+    component: () => import("../views/transition/index.vue"),
+  },
 ];
 
 const router = createRouter({
