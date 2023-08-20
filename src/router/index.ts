@@ -90,6 +90,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "transition",
     component: () => import("../views/transition/index.vue"),
   },
+  {
+    path: "/callStack",
+    name: "callStack",
+    component: () => import("../views/callStack/index.vue"),
+  },
 ];
 
 const router = createRouter({
