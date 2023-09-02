@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <button @click="handle">handle</button>
     <div
       class="route"
       v-for="item in routers"
@@ -16,6 +17,15 @@ import { onMounted, ref } from "vue";
 import { useRouter, RouteRecordRaw } from "vue-router";
 
 import routers from "@/router/auto.js";
+import fib from "virtual:fib";
+
+// import env from "virtual:env";
+
+// console.log(env);
+
+function handle() {
+  console.log("fib", fib(10));
+}
 const router = useRouter();
 console.log(import.meta);
 const go = (r: RouteRecordRaw) => {
