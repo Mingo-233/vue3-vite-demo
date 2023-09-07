@@ -60,7 +60,6 @@ export default function mpa(
           `</body>\n<script type="module" src="/src/views/pageA/main.ts"></script>\n`
         );
         console.log("load,content", content);
-        //  `</body>\n<script type="module" src="/src/views/pageA/main.ts"></script>\n`;
         return content;
       } else {
         return null;
