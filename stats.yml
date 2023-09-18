@@ -1,0 +1,81 @@
+assets/index.3d5a2518.js:
+  /src/views/lang/index.vue:
+    rendered: 557
+    gzip: 292
+assets/index.655af2ad.js:
+  /src/router/auto.js:
+    rendered: 662
+    gzip: 332
+  /src/views/index.vue:
+    rendered: 846
+    gzip: 451
+  /src/views/index.vue?vue&type=style&index=0&scoped=true&lang.less:
+    rendered: 59
+    gzip: 70
+assets/index.f3049d65.js:
+  /index.html:
+    rendered: 0
+    gzip: 0
+  /node_modules/.pnpm/@intlify+core-base@9.4.1/node_modules/@intlify/core-base/dist/core-base.mjs:
+    rendered: 48710
+    gzip: 10545
+  /node_modules/.pnpm/@intlify+message-compiler@9.4.1/node_modules/@intlify/message-compiler/dist/message-compiler.esm-browser.js:
+    rendered: 56881
+    gzip: 9509
+  /node_modules/.pnpm/@intlify+shared@9.4.1/node_modules/@intlify/shared/dist/shared.mjs:
+    rendered: 3310
+    gzip: 1273
+  /node_modules/.pnpm/@vue+reactivity@3.3.4/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js:
+    rendered: 24941
+    gzip: 5412
+  /node_modules/.pnpm/@vue+runtime-core@3.3.4/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js:
+    rendered: 111285
+    gzip: 25337
+  /node_modules/.pnpm/@vue+runtime-dom@3.3.4/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
+    rendered: 10833
+    gzip: 3313
+  /node_modules/.pnpm/@vue+shared@3.3.4/node_modules/@vue/shared/dist/shared.esm-bundler.js:
+    rendered: 5627
+    gzip: 1966
+  /node_modules/.pnpm/pinia@2.0.28_typescript@4.9.4+vue@3.3.4/node_modules/pinia/dist/pinia.mjs:
+    rendered: 2223
+    gzip: 933
+  /node_modules/.pnpm/vue-demi@0.13.11_vue@3.3.4/node_modules/vue-demi/lib/index.mjs:
+    rendered: 19
+    gzip: 39
+  /node_modules/.pnpm/vue-i18n@9.4.1_vue@3.3.4/node_modules/vue-i18n/dist/vue-i18n.mjs:
+    rendered: 80817
+    gzip: 15002
+  /node_modules/.pnpm/vue-router@4.1.6_vue@3.3.4/node_modules/vue-router/dist/vue-router.mjs:
+    rendered: 104625
+    gzip: 26278
+  /src/App.vue:
+    rendered: 929
+    gzip: 481
+  /src/App.vue?vue&type=style&index=0&scoped=true&lang.less:
+    rendered: 57
+    gzip: 72
+  /src/assets/index.less:
+    rendered: 15
+    gzip: 35
+  /src/directive/index.ts:
+    rendered: 921
+    gzip: 356
+  /src/main.ts:
+    rendered: 124
+    gzip: 109
+  /src/router/index.ts:
+    rendered: 417
+    gzip: 244
+  /src/utils/i18n.ts:
+    rendered: 365
+    gzip: 264
+  plugin-vue:export-helper:
+    rendered: 157
+    gzip: 136
+  vite/modulepreload-polyfill:
+    rendered: 1576
+    gzip: 603
+  vite/preload-helper:
+    rendered: 1363
+    gzip: 590

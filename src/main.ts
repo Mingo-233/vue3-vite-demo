@@ -5,12 +5,11 @@ import router from "./router";
 import "./assets/index.less";
 const app = createApp(App);
 import { directiveHandle } from "@/directive/index.js";
+import { i18n } from "@/utils/i18n";
 directiveHandle(app);
-import antd from "ant-design-vue";
-import "ant-design-vue/dist/antd.css";
 app.use(router);
-app.use(antd);
 app.use(createPinia());
+app.use(i18n);
 app.mount("#app");
 
 // app.config.errorHandler = function (err, vm, info) {
