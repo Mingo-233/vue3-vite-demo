@@ -1,22 +1,23 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import { visualizer } from "rollup-plugin-visualizer";
+import { viteSingleFile } from "vite-plugin-singlefile";
 const path = require("path");
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    visualizer({ open: true, template: "treemap", gzipSize: true }),
-  ],
+  base: "./",
+  plugins: [vue(), viteSingleFile()],
   server: {
     host: "0.0.0.0",
     port: 6800,
-    headers: {
-      // "Access-Control-Allow-Origin": "*",
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
-    },
   },
+  // build: {
+  //   polyfillDynamicImport: false,
+  //   rollupOptions: {
+  //     output: {
+  //       format: "iife",
+  //     },
+  //   },
+  // },
   define: {
     "process.env": {},
   },
