@@ -3,5 +3,6 @@
   "ban": "banner",
   "buffer": "buffer",
   "interpolation": "interpolationEngine",
-  "search": "search"
+  "search": "search",
+  "sayX": "say {msg}"
 }

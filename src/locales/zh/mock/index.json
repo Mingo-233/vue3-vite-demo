@@ -3,5 +3,6 @@
   "buffer": "缓冲液",
   "ban": "香蕉",
   "interpolation": "插补文字",
-  "search": "搜索"
+  "search": "搜索",
+  "sayX": "说{msg}"
 }

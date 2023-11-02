@@ -1,7 +1,6 @@
-import { createI18n } from "vue-i18n";
+import { createI18n, useI18n } from "vue-i18n";
 import zhMessage from "@/locales/zh/mock/index.json";
 import enMessage from "@/locales/en/mock/index.json";
-
 export const i18n = createI18n({
   locale: "zh", // set locale
   fallbackLocale: "en", // set fallback locale
@@ -9,9 +8,13 @@ export const i18n = createI18n({
     zh: zhMessage,
     en: enMessage,
   },
+  legacy: false,
 });
-
 console.log("i18n", i18n);
+
+export function setLocale(locale: "zh" | "en") {
+  i18n.global.locale.value = locale;
+}
 
 // setTimeout(() => {
 //   const res = i18n.global.getLocaleMessage("zh");
