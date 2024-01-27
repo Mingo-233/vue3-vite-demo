@@ -27,7 +27,6 @@ function handleFileUpload(event) {
     workbook = read(data, { type: "binary" });
     console.log("SheetNames", workbook.SheetNames);
 
-    let worksheet = [];
     let SheetNames = workbook.SheetNames;
     SheetNames.forEach((sheetName, index) => {
       // if (index > 1) return;
@@ -57,23 +56,25 @@ function processExcel() {
         // 加班时间
         let overtime = 0;
         item.forEach((hour, index) => {
+          // 月份修正
+          const monthFix = month.value === "1" ? "12" : month.value - 1;
           if (index === 2) {
-            str += `${month.value - 1}月26号加班${hour}小时,`;
+            str += `${monthFix}月26号加班${hour}小时,`;
           }
           if (index === 3) {
-            str += `${month.value - 1}月27号加班${hour}小时,`;
+            str += `${monthFix}月27号加班${hour}小时,`;
           }
           if (index === 4) {
-            str += `${month.value - 1}月28号加班${hour}小时,`;
+            str += `${monthFix}月28号加班${hour}小时,`;
           }
           if (index === 5) {
-            str += `${month.value - 1}月29号加班${hour}小时,`;
+            str += `${monthFix}月29号加班${hour}小时,`;
           }
           if (index === 6) {
-            str += `${month.value - 1}月30号加班${hour}小时,`;
+            str += `${monthFix}月30号加班${hour}小时,`;
           }
           if (index === 7) {
-            str += `${month.value - 1}月31号加班${hour}小时,`;
+            str += `${monthFix}月31号加班${hour}小时,`;
           }
           if (index >= 8 && index <= 32) {
             str += `${month.value}月${index - 7}号加班${hour}小时,`;
@@ -108,9 +109,10 @@ function processExcel() {
         obj.weekOvertime = item[35] || 0;
         // 国定加班
         obj.nationalOvertime = item[36] || 0;
-
         obj.totalOvertime =
-          obj.regularOvertime + obj.weekOvertime + obj.nationalOvertime;
+          Number(obj.regularOvertime) +
+          Number(obj.weekOvertime) +
+          Number(obj.nationalOvertime);
         startHandlePersonName = obj.name;
       }
 
