@@ -2,7 +2,9 @@
 import type { PluginOption } from "vite";
 // import { name } from "../package.json";
 import { MpaOptions } from "./utils/types";
-import { promises as fs } from "fs";
+import { promises as fsp } from "fs";
+import fs from "fs";
+import path from "path";
 
 import { getFirstPage, getHistoryReWriteRuleList, getMPAIO } from "./utils";
 let name = "aa";
@@ -26,7 +28,7 @@ export default function mpa(
     );
     process.exit(1);
   }
-
+  let currentConfig: any;
   return {
     name,
     enforce: "pre",
@@ -42,6 +44,9 @@ export default function mpa(
       config.server = config.server || {};
       config.server.open = true;
     },
+    configResolved(resolvedConfig: any) {
+      currentConfig = resolvedConfig;
+    },
     resolveId(id) {
       console.log("resolveId", id);
       // return id;
@@ -54,7 +59,7 @@ export default function mpa(
     async load(id) {
       console.log("load", id);
       if (id.endsWith(".html")) {
-        let content = await fs.readFile(id, { encoding: "utf-8" });
+        let content: any = await fsp.readFile(id, { encoding: "utf-8" });
         content = content.replace(
           "</body>",
           `</body>\n<script type="module" src="/src/views/pageA/main.ts"></script>\n`
@@ -74,6 +79,33 @@ export default function mpa(
       //       rewrites: getHistoryReWriteRuleList(options),
       //     })
       //   );
+    },
+    closeBundle() {
+      const root = currentConfig.root || process.cwd();
+      const dest =
+        (currentConfig.build && currentConfig.build.outDir) || "dist";
+      const resolve = (p: string) => path.resolve(root, p);
+
+      const distPath = "dist"; // 目标文件夹路径
+      const pagesPath = "dist/src/views"; // 页面文件夹路径
+
+      // 获取页面文件夹中的所有文件夹名
+      const pages = fs
+        .readdirSync(pagesPath, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => dirent.name);
+
+      // 遍历所有页面文件夹
+      pages.forEach((page) => {
+        const fromPath = path.join(pagesPath, page, "index.html"); // 原始文件路径
+        const toPath = path.join(distPath, page, "index.html"); // 目标文件路径
+
+        // 创建目标文件夹
+        fs.mkdirSync(path.dirname(toPath), { recursive: true });
+
+        // 移动文件
+        fs.renameSync(fromPath, toPath);
+      });
     },
   };
 }
