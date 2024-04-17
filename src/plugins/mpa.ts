@@ -71,14 +71,29 @@ export default function mpa(
       }
     },
     configureServer({ middlewares: app }) {
-      //   app.use(
-      //     history({
-      //       verbose: Boolean(process.env.DEBUG) && process.env.DEBUG !== "false",
-      //       disableDotRule: undefined,
-      //       htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
-      //       rewrites: getHistoryReWriteRuleList(options),
-      //     })
-      //   );
+      return () => {
+        app.use((req, res, next) => {
+          const originalUrl = req.originalUrl;
+          const pathName = originalUrl?.match(/\/([0-9a-zA-Z-_]+)/)?.[1];
+          console.log("pathName", pathName);
+          const publicUrl = path.resolve(process.cwd(), "public/index.html");
+          let templateHtml = fs.readFileSync(publicUrl, "utf-8");
+          templateHtml = templateHtml.replace(
+            '<script type="module" src="/src/main.ts"></script>',
+            `<script type="module" src="/src/views/${pathName}/main.ts"></script>`
+          );
+          console.log(templateHtml);
+          res.end(templateHtml);
+        });
+      };
+      // app.use(
+      //   history({
+      //     verbose: Boolean(process.env.DEBUG) && process.env.DEBUG !== "false",
+      //     disableDotRule: undefined,
+      //     htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
+      //     rewrites: getHistoryReWriteRuleList(options),
+      //   })
+      // );
     },
     closeBundle() {
       const root = currentConfig.root || process.cwd();
@@ -106,6 +121,7 @@ export default function mpa(
         // 移动文件
         fs.renameSync(fromPath, toPath);
       });
+      fs.rmdirSync("dist/src", { recursive: true });
     },
   };
 }
