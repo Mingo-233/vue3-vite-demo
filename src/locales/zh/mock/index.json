@@ -4,5 +4,9 @@
   "ban": "香蕉",
   "interpolation": "插补文字",
   "search": "搜索",
-  "sayX": "说{msg}"
+  "sayX": "说{msg}",
+  "children": {
+    "name": "小A"
+  },
+  "cupList": ["杯子A", "杯子B"]
 }
