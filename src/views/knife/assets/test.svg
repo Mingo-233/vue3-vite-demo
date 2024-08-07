@@ -1,0 +1,10 @@
+<svg
+  x="0"
+  y="0"
+  width="1mm"
+  height="1mm"
+  overflow="visible"
+  viewBox="0 0 1 1"
+>
+  <circle cx="0.5" cy="0.5" r="0.4" fill="red" />
+</svg>

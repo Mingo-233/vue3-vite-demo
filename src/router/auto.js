@@ -5,12 +5,12 @@ console.log(files);
 // interface anyObj {
 //   [propName: string]: any;
 // }
-const modules: any = {};
+const modules = {};
 for (const key in files) {
   modules[key.replace(/(\.\/|\.ts)/g, "")] = files[key].default;
 }
 
-let routers: any = [];
+let routers = [];
 for (const key in modules) {
   routers = [...routers, ...modules[key].options.routes];
 }
