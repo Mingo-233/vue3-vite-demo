@@ -6,25 +6,10 @@ import SvgUtil from "./SvgUtil";
 import { DPI } from "./helper";
 import type { TUnitType } from "./helper";
 import { layerKnifeData } from "./mockData";
-import { usePdf } from "./pdf.js";
+// import { usePdf } from "./pdf.js";
+import { useSvgPdf } from "./pdfSvg.js";
 import path from "path";
-// const props = defineProps<{
-//   layerKnife: KnifeLayer;
-//   name: string;
-//   scale: Ref<number>;
-//   background: Ref<string | null>;
-//   science_image: string | null;
-//   materialShow: Ref<boolean>;
-//   isShowCutline: Ref<boolean>;
-//   selectedFace: Ref<string>;
-//   faceBackground: Ref<Record<string, { rgba: string; cmyk: string }>>;
-//   isArrowShow: Ref<boolean>;
-//   sizeUnit?: string;
-//   sizeType?: string;
-//   side?: Ref<"inside" | "outside">;
-//   elaborate?: boolean;
-//   unitType: TUnitType;
-// }>();
+
 const layerKnife = layerKnifeData;
 const designs = [
   {
@@ -133,8 +118,8 @@ const dashStyle = computed(() => {
 function log() {
   // console.log("bleedFill", bleedFill.value);
   // console.log("bleedsForSvg", bleedsForSvg.value);
-  console.log("facesForSvg", facesForSvg.value);
-  console.log("backgroundFill", backgroundFill.value);
+  // console.log("facesForSvg", facesForSvg.value);
+  // console.log("backgroundFill", backgroundFill.value);
   // console.log("cutsForSvg", cutsForSvg.value);
 }
 setTimeout(() => {
@@ -172,48 +157,32 @@ setTimeout(() => {
       },
     },
   };
-  usePdf(config);
-  
+  // usePdf(config);
+  useSvgPdf(config);
 }, 1000);
-// const arrowSize = computed(() => {
-//   if (sizeType === "dm") {
-//     return layerKnife.knifeSize;
-//   } else if (sizeType === "ed") {
-//     return layerKnife.outSize;
-//   } else if (sizeType === "id") {
-//     return layerKnife.size;
-//   }
-//   const { sizeArrowData = [] } = layerKnife;
-//   const widthArrow = sizeArrowData.find((vo) => vo.lineName === "W");
-//   const heightArrow = sizeArrowData.find((vo) => vo.lineName === "H");
-//   const lengthArrow = sizeArrowData.find((vo) => vo.lineName === "L");
-//   return {
-//     W: widthArrow?.lineLength ?? 0,
-//     H: heightArrow?.lineLength ?? 0,
-//     L: lengthArrow?.lineLength ?? 0,
-//   };
-// });
-const whlArrowData = computed(() => {
-  if (
-    !layerKnife.sizeArrowData ||
-    JSON.stringify(layerKnife.sizeArrowData) === "{}"
-  ) {
-    return [];
-  }
-  const { sizeArrowData = [] } = layerKnife;
-  const lineNames = ["W", "L", "H"];
-  // if (mode === 'advance') {
-  //   return sizeArrowData.filter((vo) => !lineNames.includes(vo.lineName));
-  // }
-  return sizeArrowData.filter((vo) => lineNames.includes(vo.lineName));
-});
+function mmToPt(mm: number) {
+  return mm * (72 / 25.4);
+}
+
+const globalSvgWidth = layerKnife.totalX + 2 * layerKnife.bleedline;
+const globalSvgHeight = layerKnife.totalY + 2 * layerKnife.bleedline;
 </script>
 <template>
   <div
     class="background-wrap"
     :style="`${side === 'inside' ? 'transform: scale(-1, 1)' : ''}`"
   >
-    <svg id="globalSvg" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <svg
+      id="globalSvg"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      x="0"
+      y="0"
+      :width="globalSvgWidth + 'mm'"
+      :height="globalSvgHeight + 'mm'"
+      overflow="visible"
+      :viewBox="`0 0 ${globalSvgWidth} ${globalSvgHeight}`"
+    >
       <defs>
         <pattern
           :id="`scienceImageNullPattern_${name}`"
@@ -253,26 +222,20 @@ const whlArrowData = computed(() => {
           />
         </pattern>
       </defs>
-      <svg
-        v-if="layerKnife"
-        x="0"
-        y="0"
-        width="1mm"
-        height="1mm"
-        overflow="visible"
-        viewBox="0 0 1 1"
-      >
-        <path
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
           v-show="layerKnife.bleedline && isShowCutline"
-          :transform="`translate(-${layerKnife.bleedline}, -${layerKnife.bleedline})`"
-          :stroke-width="strokeWidth"
-          stroke="#ff0000"
-          :style="{ fill: bleedFill }"
-          :d="bleedsForSvg"
-        />
-        <g>
-          <!-- :class="{ 'face-active': item.name === curFace }" -->
-
+        >
+          <path
+            :stroke-width="strokeWidth"
+            stroke="#ff0000"
+            :style="{ fill: bleedFill }"
+            :d="bleedsForSvg"
+          />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
           <path
             v-for="item in facesForSvg"
             :key="`knifeFace_${item.name}`"
@@ -285,16 +248,65 @@ const whlArrowData = computed(() => {
             :fill="backgroundOfFace(item.name)"
             :d="item.d"
           />
-        </g>
-        <g>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
           <path
+            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
             :stroke-width="strokeWidth"
             stroke="#00ff00"
             fill="none"
             :d="cutsForSvg"
           />
-        </g>
-        <g>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+          <g
+            v-for="(item, index) in layerKnife.folds"
+            :key="index"
+            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+          >
+            <line
+              v-if="!item.path && !item.blank"
+              :stroke-width="strokeWidth"
+              stroke="#0000ff"
+              :stroke-dasharray="dashStyle"
+              :x1="item.x1"
+              :y1="item.y1"
+              :x2="item.x2"
+              :y2="item.y2"
+            />
+            <path
+              v-if="item.path"
+              stroke="#333333"
+              :stroke-width="strokeWidth"
+              :stroke-dasharray="dashStyle"
+              fill="none"
+              :d="item.d"
+            />
+          </g>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+          <path
+            v-for="(item, index) in holesForSvg"
+            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+            :key="`holes${index}`"
+            :stroke-width="strokeWidth"
+            stroke="#888800"
+            :style="{ fill: '#ffffff' }"
+            :d="item"
+          />
+        </svg>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <circle
+          cx="50"
+          cy="50"
+          r="40"
+          stroke="black"
+          stroke-width="2"
+          fill="red"
+        />
+      </svg>
+      <!-- <g>
           <g v-for="(item, index) in layerKnife.folds" :key="index">
             <line
               v-if="!item.path && !item.blank"
@@ -325,29 +337,7 @@ const whlArrowData = computed(() => {
             :style="{ fill: '#ffffff' }"
             :d="item"
           />
-        </g>
-        <!-- <g v-if="isArrowShow && !elaborate">
-          <template v-for="(item, index) in whlArrowData" :key="`a${index}`">
-            <ArrowPair
-              :p1="item.p1"
-              :p2="item.p2"
-              :rotate="item.rotate"
-              :center="item.center"
-              :lineName="item.lineName"
-              :lineLength="arrowSize[item.lineName as 'W' | 'H' | 'L']"
-              :scale="scale.value"
-              :disabled="true"
-              :lineType="item.lineType"
-              :valueUnit="item.unit"
-              :unitType="unitType ?? 'mm'"
-              :tpointer="item.tpointer"
-              :active="false"
-              :side="side?.value || 'outside'"
-              :size-unit="sizeUnit"
-            />
-          </template>
         </g> -->
-      </svg>
     </svg>
   </div>
 </template>

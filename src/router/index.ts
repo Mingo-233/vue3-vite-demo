@@ -21,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "knife",
     component: () => import("../views/knife/index.vue"),
   },
+  {
+    path: "/svg",
+    name: "svg",
+    component: () => import("../views/svg/index.vue"),
+  },
 ];
 
 const router = createRouter({

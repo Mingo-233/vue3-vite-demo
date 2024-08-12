@@ -2,6 +2,7 @@
 import { Ref, ref } from "vue";
 import { Sketch as KnifeLayer, Design } from "./helper";
 import Background from "./Background.vue";
+import BackgroundSVG from "./BackgroundSVG.vue";
 
 import { DPI } from "./helper";
 import type { TUnitType } from "./helper";
@@ -21,7 +22,8 @@ const scale = ref(0.37023462996825945);
     }"
   >
     <div class="design-box">
-      <Background />
+      <!-- <Background /> -->
+      <BackgroundSVG />
     </div>
   </div>
 </template>

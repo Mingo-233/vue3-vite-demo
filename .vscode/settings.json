@@ -15,5 +15,6 @@
     "view.progress_submenu.empty_keys"
   ],
   "i18n-ally.theme.annotationMissingBorder": "#d37070",
-  "i18n-ally.theme.annotationMissing": "#d37070"
+  "i18n-ally.theme.annotationMissing": "#d37070",
+  "liveServer.settings.port": 5501
 }

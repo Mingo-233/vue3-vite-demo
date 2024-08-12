@@ -1,0 +1,279 @@
+{
+    "id": 10118767,
+    "length": 120.6,
+    "width": 60.6,
+    "height": 161.6,
+    "thickness": 0.5,
+    "inless": 0.3,
+    "outless": 0.2,
+    "background": null,
+    "userId": 1102855,
+    "images": null,
+    "membrane_id": null,
+    "is_mode": 0,
+    "design_data": [
+        {
+            "bg": {
+                "x": 0,
+                "y": 0,
+                "width": 1080.3959641330482,
+                "height": 270.09899103326205
+            },
+            "id": "89109b25-c771-4e80-845a-340863871adb",
+            "src": "https://cdn.pacdora.com/font/3280b6fb-353d-40bb-804f-e553e615a7e8.woff2",
+            "type": "font",
+            "uuid": "89109b25-c771-4e80-845a-340863871adb",
+            "style": {
+                "top": 137.139,
+                "left": 55.0726,
+                "color": "#191919",
+                "width": 285.855,
+                "height": 34.3026,
+                "rotate": 0,
+                "opacity": 100,
+                "fontSize": 22.868381240544625,
+                "vertical": 0,
+                "textAlign": "center",
+                "fontFamily": "f99066",
+                "lineHeight": 34.30257186081695
+            },
+            "value": "Your text here",
+            "example": "Crimson-Roman",
+            "_layer_name": "traditional"
+        }
+    ],
+    "inside_design_data": [],
+    "by_project_id": null,
+    "material_obj": null,
+    "material_jpg": null,
+    "material_mtl": null,
+    "is_render": 0,
+    "line_guides": null,
+    "screenshot_id": 13509712,
+    "screenshot": "//test-cdn.pacdora.com/render-cover/77afbc83-68a1-4077-ac8a-00abbd853a48.png",
+    "color_history": null,
+    "inside_background": null,
+    "face_background": {
+        "H": {
+            "cmyk": "",
+            "rgba": "#b52b2b"
+        },
+        "FL": {
+            "cmyk": "",
+            "rgba": "#373dbd"
+        }
+    },
+    "inside_face_background": null,
+    "show_bleed_line": 1,
+    "show_material": 1,
+    "size_type": "dm",
+    "mch_id": 0,
+    "by_mode_id": 0,
+    "by_work_id": null,
+    "by_ai_project_id": 0,
+    "by_share_project_id": 0,
+    "blankSettingId": 16352,
+    "rotate": 0,
+    "extend_attrs": {
+        "trademark": "",
+        "productName": "",
+        "nameModified": false
+    },
+    "size_option": null,
+    "enterpriseId": null,
+    "enterpriseUid": null,
+    "layer": {
+        "traditional": {
+            "inless": 0.3,
+            "outless": 0.2,
+            "bleedline": 3,
+            "thickness": 0.5,
+            "background": null,
+            "science_id": 8,
+            "design_list": [
+                {
+                    "bg": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 1080.3959641330482,
+                        "height": 270.09899103326205
+                    },
+                    "id": "89109b25-c771-4e80-845a-340863871adb",
+                    "src": "https://cdn.pacdora.com/font/3280b6fb-353d-40bb-804f-e553e615a7e8.woff2",
+                    "type": "font",
+                    "uuid": "89109b25-c771-4e80-845a-340863871adb",
+                    "style": {
+                        "top": 137.139,
+                        "left": 55.0726,
+                        "color": "#191919",
+                        "width": 285.855,
+                        "height": 34.3026,
+                        "rotate": 0,
+                        "opacity": 100,
+                        "fontSize": 22.868381240544625,
+                        "vertical": 0,
+                        "textAlign": "center",
+                        "fontFamily": "f99066",
+                        "lineHeight": 34.30257186081695
+                    },
+                    "value": "Your text here",
+                    "example": "Crimson-Roman",
+                    "_layer_name": "traditional"
+                }
+            ],
+            "line_guides": null,
+            "membrane_id": null,
+            "science_name": "White card board",
+            "membrane_name": "",
+            "science_image": "//cdn.baoxiaohe.com/94e8078a-9931-42cd-97ed-57883bd88085.jpg",
+            "def_line_color": "#999999",
+            "face_background": {
+                "H": {
+                    "cmyk": "",
+                    "rgba": "#b52b2b"
+                },
+                "FL": {
+                    "cmyk": "",
+                    "rgba": "#373dbd"
+                }
+            },
+            "inside_background": null,
+            "inside_design_list": [],
+            "inside_membrane_id": null,
+            "inside_membrane_name": "",
+            "inside_face_background": null
+        }
+    },
+    "globalDesignList": null,
+    "openParams": null,
+    "knifeData": null,
+    "owner_type": "private",
+    "user_data": {
+        "background": {
+            "colors": [
+                {
+                    "step": 0,
+                    "color": "#B5B5B5"
+                },
+                {
+                    "step": 1,
+                    "color": "#EBEBEB"
+                }
+            ],
+            "direction": 180
+        },
+        "backgroundType": "gradient",
+        "partThemeColorData": {
+            "color": "",
+            "recentColors": [],
+            "blankSettingId": 16352
+        }
+    },
+    "type": "mockup-detail",
+    "appId": null,
+    "create_time": "1722996176129",
+    "by_experience_project_id": null,
+    "update_time": "1723018640324",
+    "is_delete": 0,
+    "science_id": 8,
+    "user_id": 1102855,
+    "cate_id": 41,
+    "commentCount": 0,
+    "unread": false,
+    "collaborate": {
+        "permission": "",
+        "ioToken": "",
+        "memberCount": 0
+    },
+    "project_name": "Double tray boxes storage with front opening cardboard mailer mockup 100103",
+    "price": 0,
+    "can_print": true,
+    "supportSciences": [
+        8,
+        7,
+        37,
+        3,
+        5,
+        6,
+        11,
+        14
+    ],
+    "cate": {
+        "id": 41,
+        "name": "锁扣飞机式插锁盒",
+        "image": "//yun.baoxiaohe.com/render/20220113/100103.jpg",
+        "sort": 100103,
+        "remarks": "锁扣飞机式插锁盒",
+        "faces": "[]",
+        "cate_no": "100103",
+        "defaultSize": [
+            {
+                "length": "120",
+                "width": "80",
+                "height": "200",
+                "remark": ""
+            },
+            {
+                "length": "120",
+                "width": "60",
+                "height": "160",
+                "remark": ""
+            },
+            {
+                "length": "90",
+                "width": "90",
+                "height": "90",
+                "remark": ""
+            }
+        ],
+        "lengthLimit": "15,2000",
+        "widthLimit": "10,2000",
+        "heightLimit": "15,2000",
+        "code": "PairAircraftWithLock",
+        "minThickness": "0.2",
+        "price": "0.00",
+        "discount": 1,
+        "mu_price": "0.00",
+        "mu_discount": 1,
+        "min_thickness": "0.2",
+        "complex_type": 0,
+        "size_options": [],
+        "map_options": null,
+        "printExtra": [
+            "f_d_p_huhe"
+        ],
+        "elaborate": 0,
+        "layerList": [
+            {
+                "name": "traditional",
+                "friendlyName": "传统面纸",
+                "isGrey": false,
+                "fixedThickness": 0,
+                "minThickness": 0.2
+            }
+        ],
+        "layerGlobalSettings": null,
+        "is_enterprise": 0,
+        "openParamsStatus": 1,
+        "cate_type": 0,
+        "IsOnlyManufacture": 0,
+        "mainFace": {
+            "face": "F",
+            "side": "outside",
+            "layer": "traditional"
+        },
+        "displaySetting": {},
+        "partGroup": {},
+        "appId": "",
+        "create_time": "1585550467392",
+        "update_time": "1672724285655",
+        "is_delete": 0,
+        "cate_top_id": 1,
+        "modelClassId": 181
+    },
+    "science_image": "//cdn.baoxiaohe.com/94e8078a-9931-42cd-97ed-57883bd88085.jpg",
+    "bleedline": 3,
+    "science_name": "White card board",
+    "def_line_color": "#999999",
+    "membrane_name": ""
+}

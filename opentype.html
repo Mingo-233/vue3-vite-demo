@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="https://opentype.js.org/dist/opentype.js"></script>
+    <script src="https://unpkg.com/wawoff2@2.0.1/build/decompress_binding.js"></script>
+
+    <script>
+        function load() {
+            // const buffer = document.getElementById('myfile').files[0].arrayBuffer();
+            // const buffer = fetch('/Gilroy-Medium.otf').then(res => res.arrayBuffer());
+            const buffer = fetch('/abab.woff2').then(res => res.arrayBuffer());
+            buffer.then(data => {
+                const decompressed = Module.decompress(data);
+                const font = opentype.parse(decompressed);
+                // const font = opentype.parse(data);
+                console.log(font);
+                let path = font.getPath('odd, abb !!', 0, 0, 50)
+
+                console.log(path);
+
+                // 获取路径的边界框
+                const bbox = path.getBoundingBox();
+
+                const pathString = path.toSVG(6);
+                const svgDom = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svgDom.setAttribute("width", bbox.x2 - bbox.x1);
+                svgDom.setAttribute("height", bbox.y2 - bbox.y1);
+                svgDom.setAttribute("viewBox", `${bbox.x1} ${bbox.y1} ${bbox.x2 - bbox.x1} ${bbox.y2 - bbox.y1}`);
+                svgDom.innerHTML = pathString;
+
+                document.body.appendChild(svgDom);
+            })
+        }
+        window.load = load;
+        setTimeout(() => {
+            load()
+        }, 1000);
+
+    </script>
+</body>
+
+</html>
