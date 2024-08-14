@@ -9,7 +9,8 @@
 
 <body>
 
-    <script src="https://opentype.js.org/dist/opentype.js"></script>
+    <!-- <script src="https://opentype.js.org/dist/opentype.js"></script> -->
+    <script src="./opentype.js"></script>
     <script src="https://unpkg.com/wawoff2@2.0.1/build/decompress_binding.js"></script>
 
     <script>
@@ -22,7 +23,18 @@
                 const font = opentype.parse(decompressed);
                 // const font = opentype.parse(data);
                 console.log(font);
-                let path = font.getPath('odd, abb !!', 0, 0, 50)
+                getTextPaths(font,{
+                    text:'hello world!',
+                    fontSize: 44,
+                    textAlign: 'center',
+                    MaxWidth: 100,
+                    MaxHeight: 30,
+                })
+                let path = font.getPath('odd, abb !!', 0, 0, 44,{
+                    // colorFormat:'hexa',
+                    fill:'#ff0000',
+                    letterSpacing: 0,
+                })
 
                 console.log(path);
 
@@ -32,17 +44,39 @@
                 const pathString = path.toSVG(6);
                 const svgDom = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svgDom.setAttribute("width", bbox.x2 - bbox.x1);
-                svgDom.setAttribute("height", bbox.y2 - bbox.y1);
+                svgDom.setAttribute("height", bbox.y2 - bbox.y1 + 10);
                 svgDom.setAttribute("viewBox", `${bbox.x1} ${bbox.y1} ${bbox.x2 - bbox.x1} ${bbox.y2 - bbox.y1}`);
+                svgDom.setAttribute('fill', 'red')
                 svgDom.innerHTML = pathString;
 
                 document.body.appendChild(svgDom);
             })
         }
         window.load = load;
+
         setTimeout(() => {
-            load()
+            // load()
+            getTextPaths('_',{
+                    text:'hello world!',
+                    fontSize: 44,
+                    textAlign: 'center',
+                    MaxWidth: 100,
+                    MaxHeight: 30,
+                })
         }, 1000);
+
+        function getTextPaths(fontApp,config){
+            const textArr = config.text.split('')
+            console.log(textArr);
+            return []
+        }
+        function getPath(fontApp,text,fontSize){
+            return fontApp.getPath(text, 0, 0, fontSize)
+        }
+        function computeTextPaths(){
+
+
+        }
 
     </script>
 </body>

@@ -1,5 +1,6 @@
 import SVGtoPDF from "svg-to-pdfkit";
 import { layerKnifeData } from "./mockData";
+import projectInfo from "../svg/info.json";
 import { DPI } from "./helper";
 import { useOpenType } from "./parseText";
 const DPIV2 = 2.834645669291339;
@@ -72,21 +73,26 @@ export const useSvgPdf = (config) => {
   async function drawEndBefore(doc) {
     const globalSvg = document.querySelector("#globalSvg");
     console.log("globalSvg", globalSvg);
+    // globalSvg.setAttribute("transform", "scale(1, 1)");
     doc.addSVG(globalSvg, 0, 0);
 
-    const textSvg = await getSvg();
-    console.log("textSvg", textSvg);
+    const textSvg = await getSvg(projectInfo.design_data[0], {
+      DPI: DPIV2,
+      marginTop: 0,
+      marginLeft: MARGIN_SIDE,
+      bleedLineWidth: layerKnife.bleedline,
+    });
     doc.addSVG(textSvg, 0, 0);
   }
   function drawEnd(doc) {
     doc.end();
+    console.log(doc.page.xobjects);
   }
   async function genPdf() {
     const doc = new PDFDocument({
       size: [sizeWidth, sizeHeight],
     });
     console.log("doc", doc);
-
     // 将其保存到 Blob 中
     const stream = doc.pipe(blobStream());
 

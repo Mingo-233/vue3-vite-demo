@@ -6,15 +6,23 @@ const path = require("path");
 export default defineConfig({
   plugins: [
     vue(),
-    visualizer({ open: true, template: "treemap", gzipSize: true }),
+    // visualizer({ open: true, template: "treemap", gzipSize: true }),
   ],
   server: {
     host: "0.0.0.0",
     port: 6800,
     headers: {
-      // "Access-Control-Allow-Origin": "*",
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Access-Control-Allow-Origin": "*",
+      // "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Opener-Policy": "cross-origin",
+      "Cross-Origin-Embedder-Policy": "false",
+    },
+    proxy: {
+      "/api/": {
+        changeOrigin: true,
+        target: "https://pac.baoxiaohe.fun",
+        cookieDomainRewrite: "localhost",
+      },
     },
   },
   define: {
