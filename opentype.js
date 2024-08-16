@@ -6391,7 +6391,6 @@ var opentype = (() => {
         return p;
       }
     }
-    console.log("options.drawLayers", options.drawLayers);
     if (options.drawLayers) {
       const layers = this.getLayers(font);
       if (layers && layers.length) {
@@ -17431,7 +17430,7 @@ var opentype = (() => {
       fontSize,
       options,
       (glyph, gX, gY, gFontSize) => {
-        console.log("forEachGlyph options", options);
+        // console.log("forEachGlyph options", options);
         const glyphPath = glyph.getPath(gX, gY, gFontSize, options, this);
         if (options.drawSVG || options.drawLayers) {
           const layers = glyphPath._layers;
