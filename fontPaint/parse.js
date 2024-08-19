@@ -1,3 +1,7 @@
+const pathPartType = {
+  zh: 1,
+  en: 2,
+};
 function createWordPathContext() {
   const context = {
     word: "",
@@ -33,7 +37,9 @@ function createCnWordPathContext() {
     pathPartsTransform: {
       0: [],
     },
-    pathPartsAlignTransform: [],
+    pathPartsAlignTransform: {
+      0: [],
+    },
     resetWord() {
       context.word = "";
     },
@@ -43,15 +49,17 @@ function createCnWordPathContext() {
     addPath(path) {
       context.pathParts[context.line].push(path);
     },
-    nextLine(line) {
-      context.line = line;
-      pathParts[line] = [];
+    nextLine() {
+      context.line = context.line + 1;
+      context.pathParts[context.line] = [];
+      context.pathPartsTransform[context.line] = [];
+      context.pathPartsAlignTransform[context.line] = [];
     },
     addTransform(transform) {
       context.pathPartsTransform[context.line].push(transform);
     },
     addAlignTransform(transform) {
-      context.pathPartsAlignTransform.push(transform);
+      context.pathPartsAlignTransform[context.line].push(transform);
     },
   };
   return context;
@@ -180,93 +188,227 @@ function getCnTextPaths(fontApp, config) {
   const MAX_WIDTH = config.MaxWidth;
   const MAX_HIGHT = config.MaxHeight;
 
-  let accumulatorPathHeight = 0;
-  const { textInfoArr, maxItemHeight, line } = mapText(fontApp, config);
+  const { textInfoArr, maxItemHeight, maxItemWidth, line } = mapText(
+    fontApp,
+    config
+  );
   console.log(line);
-  const { lineNum, breakLineIndex } = line;
+  const { lineNum, breakLineIndex, maxContentHeightArr } = line;
+  let currentLine = 1;
+  let colHandleNum = 0;
   textInfoArr.forEach((textInfo, index) => {
-    accumulatorPathHeight = accumulatorPathHeight + maxItemHeight;
-
+    if (currentLine > lineNum) return;
+    if (breakLineIndex.includes(index)) {
+      // 当前命中换行索引
+      context.nextLine();
+      currentLine++;
+      colHandleNum = 0;
+    }
+    if (!textInfo.path) return;
     context.addPath(textInfo.path);
-    // const translateX = MAX_WIDTH - textInfo.pathBoundingBox.x2;
+    if (textInfo.type === pathPartType.zh) {
+      const translateX = MAX_WIDTH - maxItemWidth * currentLine;
+      //当前这列上这个字是第几个,计算垂直方向偏移量
+      const translateY = maxItemHeight * colHandleNum;
+      const transform = `translate(${translateX},${translateY})`;
+      context.addTransform(transform);
+      const alignTransform = computedPathTransform(
+        config.textAlign,
+        maxContentHeightArr[currentLine - 1]
+      );
+      context.addAlignTransform(alignTransform);
+      colHandleNum++;
+    } else {
+      console.log("英文", textInfo);
+      const translateX = MAX_WIDTH - maxItemWidth * currentLine;
+      //当前这列上这个字是第几个,计算垂直方向偏移量
+      const translateY = maxItemHeight * colHandleNum;
+      // 先平移到目标位置 然后绕svg左上角圆点旋转90度，然后再平移修复旋转移动的距离
+      const transform = `translate(${translateX},${translateY}) rotate(90,${position.x1},${position.y1}) translate(0,-${maxItemWidth})`;
+      context.addTransform(transform);
+      const alignTransform = computedPathTransform(
+        config.textAlign,
+        maxContentHeightArr[currentLine - 1]
+      );
+      context.addAlignTransform(alignTransform);
+      colHandleNum++;
+    }
+
+    console.log("context", context);
   });
-
-  function mapText(fontApp, config) {
-    const textInfoArr = [];
-    const textArr = config.text.split("");
-    // 每列都水平位移，要找出最小的宽度
-    let minItemWidth = 99999;
-    // 每个字都垂直位移，要找出最大的高度
-    let maxItemHeight = 0;
-    for (let i = 0; i < textArr.length; i++) {
-      const textItem = textArr[i];
-      const path = getPath(fontApp, textItem, config.fontSize);
-      const pathBoundingBox = path.getBoundingBox();
-      const currentPathWidth = pathBoundingBox.x2 - pathBoundingBox.x1;
-      if (currentPathWidth < minItemWidth) {
-        minItemWidth = currentPathWidth;
-      }
-      const currentPathHeight = pathBoundingBox.y2 - pathBoundingBox.y1;
-      if (currentPathHeight > maxItemHeight) {
-        maxItemHeight = currentPathHeight;
-      }
-
-      textInfoArr.push({
-        path,
-        pathBoundingBox,
-        text: textItem,
-        isBreak: false,
-      });
-    }
-    const line = computedLine(textInfoArr, maxItemHeight);
-
-    return { textInfoArr, minItemWidth, line };
-  }
-  function computedLine(textInfoArr, height) {
-    let lineNum = 1;
-    // 换行标记索引
-    let breakLineIndex = [];
-    let accumulatorPathHeight = 0;
-    textInfoArr.forEach((text, index) => {
-      if (text.isBreak) {
-        doBreak(index);
-        return;
-      }
-      accumulatorPathHeight = accumulatorPathHeight + height;
-      if (accumulatorPathHeight > MAX_HIGHT) {
-        doBreak(index);
-      }
-    });
-    function doBreak(index) {
-      lineNum++;
-      accumulatorPathHeight = 0;
-      breakLineIndex.push(index);
-    }
-    return { lineNum, breakLineIndex };
-  }
-  //   结算当前路径
-  function settlePath(context, path, currentPathHeight, currentPathWidth) {
-    context.addPath(path);
-
-    const translateY = accumulatorPathHeight - currentPathHeight;
-    const translateX = MAX_WIDTH - currentPathWidth;
-    context.addTransform(`translate(${translateX},${translateY})`);
-    context.resetWord();
-  }
   //   计算整体的偏移量
-  function computedPathTransform(textAlign) {
+  function computedPathTransform(textAlign, maxContentHeigh) {
     switch (textAlign) {
       case "center":
-        offsetX = (MaxHeight - accumulatorPathHeight) / 2;
-        return `translate(${translateX},0)`;
+        console.log("maxContentHeigh computedPathTransform", maxContentHeigh);
+        offsetY = (MAX_HIGHT - maxContentHeigh) / 2;
+        return `translate(0,${offsetY})`;
       case "right":
-        translateX = width - pathWidth;
-        return `translate(${translateX},0)`;
+        offsetY = MAX_HIGHT - maxContentHeigh;
+        return `translate(0,${offsetY})`;
 
       default:
         return "";
     }
   }
+  function mapText(fontApp, config) {
+    const textInfoArr = [];
+    const textArr = config.text.split("");
+    // 每列都水平位移，要找出最大的宽度
+    let maxItemWidth = 0;
+
+    // 每个字都垂直位移，要找出最大的高度
+    let maxItemHeight = 0;
+    // 已经识别的索引
+    let identifiedIndex = -9999;
+    for (let i = 0; i < textArr.length; i++) {
+      if (i <= identifiedIndex) {
+        continue;
+      }
+      const textItem = textArr[i];
+      if (textItem === "\n") {
+        textInfoArr.push({
+          path: null,
+          pathBoundingBox: {},
+          text: textItem,
+          isBreak: true,
+          type: pathPartType.zh,
+        });
+        continue;
+      }
+      if (isChinese(textItem)) {
+        console.log("中文", textItem);
+        const path = getPath(fontApp, textItem, config.fontSize);
+        const pathBoundingBox = path.getBoundingBox();
+        const currentPathWidth = pathBoundingBox.x2 - pathBoundingBox.x1;
+        if (currentPathWidth > maxItemWidth) {
+          maxItemWidth = currentPathWidth;
+        }
+        const currentPathHeight = pathBoundingBox.y2 - pathBoundingBox.y1;
+        if (currentPathHeight > maxItemHeight) {
+          maxItemHeight = currentPathHeight;
+        }
+
+        textInfoArr.push({
+          path,
+          pathBoundingBox,
+          text: textItem,
+          isBreak: false,
+          type: pathPartType.zh,
+        });
+        if (i === 0) {
+          position.x1 = pathBoundingBox.x1;
+          position.y1 = pathBoundingBox.y1;
+        }
+      } else {
+        console.log("英文", textItem);
+        const result = identifyNext(textItem, i, textArr);
+        console.log("result", result);
+        identifiedIndex = result.lastIndex;
+        // 因为英文要旋转过来，所以它的宽度就是高度
+        const currentPathHeight =
+          result.pathBoundingBox.x2 - result.pathBoundingBox.x1;
+
+        textInfoArr.push({
+          path: result.path,
+          pathBoundingBox: result.pathBoundingBox,
+          text: result.text,
+          isBreak: false,
+          type: pathPartType.en,
+          height: currentPathHeight,
+          chilePath: result.chilePath,
+        });
+        if (i === 0) {
+          position.x1 = pathBoundingBox.x1;
+          position.y1 = pathBoundingBox.y1;
+        }
+      }
+    }
+    const line = computedLine(textInfoArr, maxItemHeight);
+
+    return { textInfoArr, maxItemWidth, maxItemHeight, line };
+  }
+  function computedLine(textInfoArr, height) {
+    let lineNum = 1;
+    // 换行标记索引
+    let breakLineIndex = [];
+    let maxContentHeightArr = [];
+    let accumulatorPathHeight = 0;
+    for (let index = 0; index < textInfoArr.length; index++) {
+      const textInfo = textInfoArr[index];
+      if (textInfo.isBreak) {
+        doBreak(index);
+        continue;
+      }
+      const _height = textInfo.height || height;
+      accumulatorPathHeight = accumulatorPathHeight + _height;
+      if (accumulatorPathHeight > MAX_HIGHT) {
+        if (textInfo.chilePath) {
+          let preAccumulatorPathHeight = accumulatorPathHeight - _height;
+          let lastPath = textInfo.chilePath[textInfo.chilePath.length - 1];
+          let lastPathHeight =
+            lastPath.path.getBoundingBox().x2 -
+            lastPath.path.getBoundingBox().x1;
+          // 从children找到能刚好能排列下的子路径
+          while (preAccumulatorPathHeight + lastPathHeight > MAX_HIGHT) {
+            textInfo.chilePath.pop();
+            lastPath = textInfo.chilePath[textInfo.chilePath.length - 1];
+            lastPathHeight =
+              lastPath.path.getBoundingBox().x2 -
+              lastPath.path.getBoundingBox().x1;
+          }
+          console.log("textInfo.chilePath", textInfo.chilePath);
+        }
+        doBreak(index, _height);
+        continue;
+      }
+    }
+
+    // 全部结束都没有换行，说明只有一行
+    // if (breakLineIndex.length === 0) {
+    maxContentHeightArr.push(accumulatorPathHeight);
+    // }
+    function doBreak(index, beforeHeight) {
+      lineNum++;
+      let _accumulatorPathHeight = 0;
+      //   如果超出最大宽度，则回退最近的累计高度
+      if (accumulatorPathHeight > MAX_HIGHT && beforeHeight) {
+        _accumulatorPathHeight = accumulatorPathHeight - beforeHeight;
+      }
+      maxContentHeightArr.push(_accumulatorPathHeight);
+      accumulatorPathHeight =
+        index === textInfoArr.length - 1 ? beforeHeight : 0;
+      breakLineIndex.push(index);
+    }
+    return { lineNum, breakLineIndex, maxContentHeightArr };
+  }
+  //   结算当前路径
+  function settlePath() {}
+
+  function identifyNext(char, index, textInfoArr) {
+    let nextText = textInfoArr[index + 1];
+    let path = null;
+    const chilePath = [];
+    while (!isEnd(nextText)) {
+      index++;
+      char = `${char}${nextText}`;
+      nextText = textInfoArr[index + 1];
+      path = getPath(fontApp, char, config.fontSize);
+      chilePath.push({
+        text: char,
+        path: path,
+      });
+    }
+    const pathBoundingBox = path.getBoundingBox();
+    return {
+      lastIndex: index,
+      path: path,
+      text: char,
+      pathBoundingBox: pathBoundingBox,
+      chilePath,
+    };
+  }
+
   return {
     pathParts: context.pathParts,
     pathPartsAlignTransform: context.pathPartsAlignTransform,
@@ -280,4 +422,21 @@ function getCnTextPaths(fontApp, config) {
       height: config.MaxHeight,
     },
   };
+}
+function isChinese(char) {
+  // 中文字符的 Unicode 范围是 \u4e00 到 \u9fff
+  return /[\u4e00-\u9fff]/.test(char);
+}
+
+function isEnglish(char) {
+  // 英文字母的 Unicode 范围是 A-Z 或 a-z
+  return /^[A-Za-z]$/.test(char);
+}
+
+//   截止判断
+function isEnd(char) {
+  // 1. 遇到中文
+  if (isChinese(char)) return true;
+  // 2. 字符结束
+  if (!char) return true;
 }

@@ -13,6 +13,7 @@
         /* position: absolute;
         top: 100px;
         right: 100px; */
+        margin: 30px 100px;
         border: 1px solid red;
       }
     </style>
@@ -52,14 +53,15 @@
             isVertical,
             domBoxSize,
           } = getCnTextPaths(font, {
-            text: "水何澹澹山岛竦峙",
-            //
+            // getCnTextPaths
+            text: "中文ABCDEFGH",
+            // text: "水何澹澹山岛竦峙",
             // text: "hello world! 123",
             fontSize: 30,
             textAlign: "center",
             // vertical: 0,
             // MaxWidth: 200,
-            // MaxHeight: 60,
+            // MaxHeight: 80,
 
             vertical: 1,
             MaxWidth: 80,
@@ -83,7 +85,7 @@
       window.load = load;
 
       setTimeout(() => {
-        // load();
+        load();
       }, 1000);
     </script>
   </body>
