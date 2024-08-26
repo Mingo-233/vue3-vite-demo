@@ -1,17 +1,20 @@
-import SVGtoPDF from "svg-to-pdfkit";
-import { layerKnifeData } from "./mockData";
-import projectInfo from "../svg/info.json";
+// import SVGtoPDF from "svg-to-pdfkit";
+import SVGtoPDF from "./svgToPdf";
+import { getLayerKnifeData, getProjectsInfo } from "./store/index";
 import { DPI } from "./helper";
 import { useOpenType } from "./parseText";
-const DPIV2 = 2.834645669291339;
-const layerKnife = layerKnifeData;
+const DPIV2 = 3.7795275591;
+const PDFLayoutDPI = 2.834645669291339;
+// const DPIV2 = 2.834645669291339;
+// const DPIV2 = 1;
+const layerKnife = getLayerKnifeData();
 const MARGIN_SIDE = 30;
 const MARGIN = MARGIN_SIDE * 2;
 // *DPIV2的目的是，将mm转换为pt
 const sizeWidth =
-  (layerKnife.totalX + 2 * layerKnife.bleedline + MARGIN) * DPIV2;
+  (layerKnife.totalX + 2 * layerKnife.bleedline + MARGIN) * PDFLayoutDPI;
 const sizeHeight =
-  (layerKnife.totalY + 2 * layerKnife.bleedline + MARGIN) * DPIV2;
+  (layerKnife.totalY + 2 * layerKnife.bleedline + MARGIN) * PDFLayoutDPI;
 console.log("sizeWidth", sizeWidth, "sizeHeight", sizeHeight);
 
 export const useSvgPdf = (config) => {
@@ -66,23 +69,33 @@ export const useSvgPdf = (config) => {
     const pageWidth = doc.page.width;
     const pageHeight = doc.page.height;
     console.log("pageWidth", pageWidth, "pageHeight", pageHeight);
-    const translateX = MARGIN_SIDE * DPIV2;
-    const translateY = MARGIN_SIDE * DPIV2;
+    const translateX = MARGIN_SIDE * PDFLayoutDPI;
+    const translateY = MARGIN_SIDE * PDFLayoutDPI;
     doc.translate(translateX, translateY);
   }
   async function drawEndBefore(doc) {
+    const designDataList = getProjectsInfo().design_data.filter(
+      (item) => item.type === "font"
+    );
+    const designLayer = document.querySelector("#design-layer");
+    console.log("designDataList", designDataList);
+    for (let i = 0; i < designDataList.length; i++) {
+      const designData = designDataList[i];
+      const textSvg = await getSvg(designData, {
+        DPI: DPIV2,
+        marginTop: 0,
+        marginLeft: MARGIN_SIDE,
+        bleedLineWidth: layerKnife.bleedline,
+      });
+      console.log("textSvg", textSvg);
+      designLayer.appendChild(textSvg);
+    }
+
+    doc.addSVG(designLayer, 0, 0);
+
     const globalSvg = document.querySelector("#globalSvg");
     console.log("globalSvg", globalSvg);
-    // globalSvg.setAttribute("transform", "scale(1, 1)");
     doc.addSVG(globalSvg, 0, 0);
-
-    const textSvg = await getSvg(projectInfo.design_data[0], {
-      DPI: DPIV2,
-      marginTop: 0,
-      marginLeft: MARGIN_SIDE,
-      bleedLineWidth: layerKnife.bleedline,
-    });
-    doc.addSVG(textSvg, 0, 0);
   }
   function drawEnd(doc) {
     doc.end();

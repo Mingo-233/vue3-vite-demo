@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,user-scalable=no, viewport-fit=cover"
+    />
+    <title>Vite App</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no, viewport-fit=cover" />
-  <title>Vite App</title>
-</head>
+  <body>
+    <div id="app"></div>
 
-<body>
-  <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+    <script src="./public/pdfkit.standalone.js"></script>
+    <script src="./public/blob-stream.js"></script>
+    <script src="./opentype.js"></script>
+    <script src="https://unpkg.com/wawoff2@2.0.1/build/decompress_binding.js"></script>
 
-  <script type="module" src="/src/main.ts"></script>
-<script src="./public/pdfkit.standalone.js"></script>
-<script src="./public/blob-stream.js"></script>
-
-</body>
-
+    <script src="./fontPaint/parse.js"></script>
+    <script src="./fontPaint/generate.js"></script>
+  </body>
 </html>

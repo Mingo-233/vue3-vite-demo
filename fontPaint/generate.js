@@ -1,5 +1,3 @@
-const isCN = true;
-
 function genSvgCode(pathWhole, config) {
   const {
     position,
@@ -9,19 +7,20 @@ function genSvgCode(pathWhole, config) {
     pathPartsTransform,
     pathPartsAlignTransform,
     domBoxSize,
+    hasCnChar,
+    adobeAiTransform = "",
+    DPI = 1,
   } = config;
   let svgPathString = "";
   //   判断是个对象
   if (Object.prototype.toString.call(pathWhole) === "[object Object]") {
     console.log("paths", pathWhole, pathPartsTransform);
     const lines = Object.keys(pathWhole);
-    console.log("lines[i]", lines);
 
     for (let i = 0; i < lines.length; i++) {
       let paths = pathWhole[lines[i]];
       const currentLineTransform = pathPartsTransform[i];
       const currentAlignTransform = pathPartsAlignTransform[i];
-      console.log("currentLineTransform", currentLineTransform);
       paths.forEach((path, index) => {
         if (!path) return;
         let pathString = path.toSVG(6);
@@ -41,71 +40,96 @@ function genSvgCode(pathWhole, config) {
         svgPathString += template;
       });
     }
-  } else {
-    pathWhole.forEach((path, index) => {
-      const pathString = path.toSVG(6);
-      const alignTransform =
-        pathPartsAlignTransform && pathPartsAlignTransform[index];
-      const template = `
-            <g transform="translate(0, ${lineHeight * index}) ${
-        alignTransform ? alignTransform : ""
-      }">
-                ${pathString}
-            </g>
-            `;
-      svgPathString += template;
-    });
   }
 
   const svgDom = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let G_Template = "";
   svgDom.setAttribute("id", "preview");
-  // svgDom.setAttribute("width", domBoxSize.width);
-  // svgDom.setAttribute("height", domBoxSize.height);
-  svgDom.setAttribute(
-    "width",
-    isVertical && !isCN ? domBoxSize.height : domBoxSize.width
-  );
-  svgDom.setAttribute(
-    "height",
-    isVertical && !isCN ? domBoxSize.width : domBoxSize.height
-  );
-  svgDom.setAttribute("overflow", "visible");
-  console.log("position", position);
-
-  svgDom.setAttribute("fill", "red");
-  if (isVertical && !isCN) {
-    svgDom.setAttribute(
-      "viewBox",
-      `${position.x1} ${position.y1} ${position.x1 + domBoxSize.height} ${
-        position.y1 + domBoxSize.width
-      }`
-    );
-    console.log("isVertical", isVertical);
-    svgDom.setAttribute(
-      "transform",
-      `rotate(90) 
-        translate(${(domBoxSize.height - domBoxSize.width) / 2},${
-        (domBoxSize.height - domBoxSize.width) / 2
-      })
-          `
-    );
-  } else {
+  //   中英文都存在垂直情况
+  if (isVertical && hasCnChar) {
+    svgDom.setAttribute("width", domBoxSize.width + "mm");
+    svgDom.setAttribute("height", domBoxSize.height + "mm");
     svgDom.setAttribute(
       "viewBox",
       `${position.x1} ${position.y1} ${position.x2 + domBoxSize.width} ${
         position.y2 + domBoxSize.height
       }`
     );
+    svgDom.setAttribute("transform", `${adobeAiTransform}`);
+
+    G_Template = `
+      <g >
+      ${svgPathString}
+      </g>
+      `;
+    svgDom.innerHTML = G_Template;
+  } else if (isVertical) {
+    let originWidth = domBoxSize.width;
+    let originHeight = domBoxSize.height;
+    svgDom.setAttribute("width", domBoxSize.height + "mm");
+    svgDom.setAttribute("height", domBoxSize.width + "mm");
+    // svgDom.setAttribute(
+    //   "viewBox",
+    //   `${position.x1} ${position.y1} ${position.x1 + originHeight} ${
+    //     position.y1 + originWidth
+    //   }`
+    // );
+    svgDom.setAttribute(
+      "viewBox",
+      `${position.x1} ${position.y1}  ${originHeight} ${originWidth}`
+    );
+    const svgTranslateX = (domBoxSize.height - domBoxSize.width) / 2;
+    // svgDom.setAttribute(
+    //   "transform",
+    //   `${adobeAiTransform}
+    //           `
+    // );
+    // svgDom.setAttribute(
+    //   "transform",
+    //   `
+    //   rotate(45)
+    //   translate(0,-${domBoxSize.width * DPI})
+    //         `
+    // );
+    // 在Ai中
+    svgDom.setAttribute(
+      "transform",
+      `${adobeAiTransform}  rotate(90)
+        translate(0,-${domBoxSize.width * DPI})
+              `
+    );
+
+    const G_Transform = ``;
+    G_Template = `
+      <g ${G_Transform}>
+      ${svgPathString}
+      </g>
+      `;
+    svgDom.innerHTML = G_Template;
+  } else {
+    // 水平情况
+    svgDom.setAttribute("width", domBoxSize.width + "mm");
+    svgDom.setAttribute("height", domBoxSize.height + "mm");
+    svgDom.setAttribute(
+      "viewBox",
+      `${position.x1} ${position.y1} ${position.x2 + domBoxSize.width} ${
+        position.y2 + domBoxSize.height
+      }`
+    );
+    svgDom.setAttribute("transform", `${adobeAiTransform}`);
+    const G_Transform = ``;
+    G_Template = `
+      <g ${G_Transform}>
+      ${svgPathString}
+      </g>
+      `;
+    svgDom.innerHTML = G_Template;
   }
-  // const G_Transform = isVertical
-  //   ? `transform="rotate(90, ${position.x1} ,${position.y1}) translate(0,0})"`
-  //   : "";
-  const G_Transform = ``;
-  const G_Template = `
-    <g ${G_Transform}>
-    ${svgPathString}
-    </g>
-    `;
+
+  //   svgDom.setAttribute("overflow", "visible");
+
+  svgDom.setAttribute("fill", "red");
+
   svgDom.innerHTML = G_Template;
   return svgDom;
 }

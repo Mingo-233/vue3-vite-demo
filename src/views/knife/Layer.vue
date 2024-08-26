@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 import { Sketch as KnifeLayer, Design } from "./helper";
 // import BackgroundSkeleton from './BackgroundSkeleton.vue';
-import Element from './Element.vue';
+import Element from "./Element.vue";
 import { DPI } from "./helper";
-import { layerKnifeData } from "./mockData";
-import projectInfo from '../svg/info.json'
+import { getLayerKnifeData, getProjectsInfo } from "./store/index";
+
 // const props = defineProps<{
 //   layerKnife: KnifeLayer;
 //   designs: Design[];
@@ -22,17 +22,17 @@ import projectInfo from '../svg/info.json'
 //   isClipByBleed: Ref<boolean>;
 //   isArrowShow: Ref<boolean>;
 // }>();
-const layerKnife = layerKnifeData;
-const designs = projectInfo.design_data
+const layerKnife = getLayerKnifeData();
+const designs = getProjectsInfo().design_data;
 const $emit = defineEmits<{
-  (e: 'selected', data: any): void;
+  (e: "selected", data: any): void;
 }>();
-const isClipByBleed = false
-const side = ref('outside')
-const canva = null
-const positionShift = 0
+const isClipByBleed = false;
+const side = ref("outside");
+const canva = null;
+const positionShift = 0;
 const scale = ref(0.4172841139581744);
-const name = "traditional"
+const name = "traditional";
 // const designs = computed(() => {
 //   if (props.side.value === 'inside') {
 //     return props.insideDesigns;
@@ -44,7 +44,7 @@ const canvasClipPath = computed(() => {
   if (isClipByBleed) {
     return `url(#layer-clip-path_${name})`;
   } else {
-    return 'none';
+    return "none";
   }
 });
 </script>
@@ -62,9 +62,15 @@ const canvasClipPath = computed(() => {
     }"
   >
     <div class="design-box">
-      <Element v-for="item in designs" :key="item.uuid" :data="item" :scale="scale" :canva="canva" />
+      <Element
+        v-for="item in designs"
+        :key="item.uuid"
+        :data="item"
+        :scale="scale"
+        :canva="canva"
+      />
     </div>
-<!-- 
+    <!-- 
     <BackgroundSkeleton
       v-if="cutlineOnTop.value !== false"
       class="background-skeleton"

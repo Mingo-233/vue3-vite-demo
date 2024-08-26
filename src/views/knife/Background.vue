@@ -5,7 +5,8 @@ import SvgUtil from "./SvgUtil";
 // import ArrowPair from './ArrowPair.vue';
 import { DPI } from "./helper";
 import type { TUnitType } from "./helper";
-import { layerKnifeData } from "./mockData";
+import { getLayerKnifeData } from "./store/index";
+
 import { usePdf } from "./pdf.js";
 import path from "path";
 // const props = defineProps<{
@@ -25,7 +26,7 @@ import path from "path";
 //   elaborate?: boolean;
 //   unitType: TUnitType;
 // }>();
-const layerKnife = layerKnifeData;
+const layerKnife = getLayerKnifeData();
 const designs = [
   {
     bg: { x: 0, y: 0, width: 1080.3959641330482, height: 270.09899103326205 },
@@ -173,7 +174,6 @@ setTimeout(() => {
     },
   };
   usePdf(config);
-  
 }, 1000);
 // const arrowSize = computed(() => {
 //   if (sizeType === "dm") {

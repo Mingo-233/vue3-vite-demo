@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="./opentype.js"></script>
+  </body>
+  <script>
+    function load() {
+      const buffer = fetch("/HarmonyOS_Regular.ttf").then((res) =>
+        res.arrayBuffer()
+      );
+      buffer.then((data) => {
+        //   const decompressed = Module.decompress(data);
+        //   const font = opentype.parse(decompressed);
+        const font = opentype.parse(data);
+        console.log(font);
+        const path = font.getPath("啊。", 0, 0, 40);
+        console.log(path);
+        const svg = path.toSVG();
+        console.log(svg);
+      });
+    }
+    window.load = load;
+
+    setTimeout(() => {
+      load();
+    }, 1000);
+  </script>
+</html>

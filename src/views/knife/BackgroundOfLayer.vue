@@ -6,9 +6,9 @@ import BackgroundSVG from "./BackgroundSVG.vue";
 
 import { DPI } from "./helper";
 import type { TUnitType } from "./helper";
-import { layerKnifeData } from "./mockData";
+import { getLayerKnifeData } from "./store/index";
 
-const layerKnife = layerKnifeData;
+const layerKnife = getLayerKnifeData();
 
 const scale = ref(0.37023462996825945);
 </script>
