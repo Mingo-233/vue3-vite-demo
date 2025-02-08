@@ -68,6 +68,7 @@ export const useOpenType = () => {
           // text: "你好哇",
           text: fontInfo.value,
           fontSize: fontSize,
+          textLineHeight: fontInfo.style.lineHeight,
           textAlign: fontInfo.style.textAlign,
           vertical: fontInfo.style.vertical,
           MaxWidth: fontInfo.style.width,

@@ -1,8 +1,6 @@
 function genSvgCode(pathWhole, config) {
   const {
     position,
-    svgSize,
-    lineHeight,
     isVertical,
     pathPartsTransform,
     pathPartsAlignTransform,

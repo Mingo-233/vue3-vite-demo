@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./public/pdfkit.standalone.js"></script>
+    <script src="./public/blob-stream.js"></script>
+  </head>
+  <body>
+    <script>
+      const doc = new PDFDocument();
+      const stream = doc.pipe(blobStream());
+
+      doc.fontSize(25).text("Some text with an embedded font!", 100, 100);
+      doc.end();
+      stream.on("finish", function () {
+        const url = stream.toBlobURL("application/pdf");
+        console.log(url);
+      });
+    </script>
+  </body>
+</html>

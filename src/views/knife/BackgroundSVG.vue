@@ -24,8 +24,28 @@ const faceBackground = ref(getProjectsInfo().face_background);
 const isArrowShow = ref(false);
 const unitType = undefined;
 const sizeType = undefined;
-const science_image = "/white.jpg";
-// const science_image1 = "/black.jpg";
+function toBase64(url: string) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.crossOrigin = "Anonymous";
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    img.onload = function () {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const base64String = canvas.toDataURL();
+      console.log(base64String);
+      resolve(base64String);
+    };
+  });
+}
+const science_image =
+  "https://cdn.baoxiaohe.com/94e8078a-9931-42cd-97ed-57883bd88085.jpg";
+// const science_image = "/white.jpg";
 const sizeUnit = "mm";
 const elaborate = false;
 const curFace = computed(() => {
@@ -65,11 +85,28 @@ const backgroundFill = computed(() => {
   }
   return materialFill.value;
 });
+const cutLinePathV2 = computed(() => {
+  const temp = cutsForSvg.value + holesForSvg.value.join("Z");
+  return temp;
+});
+const foldLinePathV2 = computed(() => {
+  let pathData = layerKnife.folds
+    .map(
+      (segment) => `M ${segment.x1} ${segment.y1} L ${segment.x2} ${segment.y2}`
+    )
+    .join(" ");
+
+  console.log("foldLinePathV2", pathData);
+
+  return pathData;
+});
+
 function backgroundOfFace(face: string) {
   if (faceBackground.value[face]) {
     return faceBackground.value[face].rgba;
   }
-  return backgroundFill.value;
+  return "#ffffff";
+  // return backgroundFill.value;
 }
 const bleedFill = computed(() => {
   return backgroundFill.value;
@@ -87,13 +124,20 @@ const holesForSvg = computed(() => {
   });
 });
 const facesForSvg = computed(() => {
-  return SvgUtil.buildFacesForSvg(layerKnife.faces);
+  const faceNames = Object.keys(getProjectsInfo().face_background);
+  const filterFaces = layerKnife.faces.filter((item) =>
+    faceNames.includes(item.name)
+  );
+  // return SvgUtil.buildFacesForSvg(layerKnife.faces);
+  return SvgUtil.buildFacesForSvg(filterFaces);
 });
 const dashStyle = computed(() => {
   return `${0.75 / scale.value} ${0.5 / scale.value}`;
 });
 
 function log() {
+  // console.log("folds", layerKnife.folds);
+  // console.log("holesForSvg", holesForSvg.value);
   // console.log("bleedFill", bleedFill.value);
   // console.log("bleedsForSvg", bleedsForSvg.value);
   // console.log("facesForSvg", facesForSvg.value);
@@ -103,41 +147,7 @@ function log() {
 
 setTimeout(() => {
   log();
-  const config = {
-    bleedConfig: {
-      path: bleedsForSvg.value,
-      fill: bleedFill.value,
-      strokeWidth: strokeWidth.value,
-      strokeColor: "#ff0000",
-      translate: {
-        x: -layerKnife.bleedline,
-        y: -layerKnife.bleedline,
-      },
-    },
-    cutConfig: {
-      path: cutsForSvg.value,
-      fill: "none",
-      strokeWidth: strokeWidth.value,
-      strokeColor: "#00ff00",
-    },
-    holesConfig: {
-      paths: holesForSvg.value,
-      fill: "#ffffff",
-      strokeWidth: strokeWidth.value,
-      strokeColor: "#888800",
-    },
-    foldsConfig: {
-      paths: layerKnife.folds,
-      strokeWidth: strokeWidth.value,
-      strokeColor: "#0000ff",
-      strokeDasharray: {
-        length: 0.75 / scale.value,
-        space: 0.5 / scale.value,
-      },
-    },
-  };
-  // usePdf(config);
-  useSvgPdf(config);
+  useSvgPdf();
 }, 1000);
 function mmToPt(mm: number) {
   return mm * (72 / 25.4);
@@ -152,15 +162,72 @@ const globalSvgHeight =
 // const translate = `translate(${strokeWidth.value * DPI}, ${
 //   strokeWidth.value * DPI
 // })`;
-const translate = `translate(2, 2)`;
 </script>
 <template>
   <div
     class="background-wrap"
     :style="`${side === 'inside' ? 'transform: scale(-1, 1)' : ''}`"
   >
+    <!-- 刀线层 -->
     <svg
-      id="globalSvg"
+      id="bleed-layer-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      :x="0"
+      :y="0"
+      :width="globalSvgWidth + 'mm'"
+      :height="globalSvgHeight + 'mm'"
+      overflow="visible"
+      :viewBox="`0 0  ${globalSvgWidth} ${globalSvgHeight}`"
+    >
+      <path
+        :stroke-width="strokeWidth"
+        stroke="#00ff00"
+        fill="none"
+        :d="bleedsForSvg"
+      />
+    </svg>
+    <svg
+      id="cut-layer-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      :x="0"
+      :y="0"
+      :width="globalSvgWidth + 'mm'"
+      :height="globalSvgHeight + 'mm'"
+      overflow="visible"
+      :viewBox="`0 0  ${globalSvgWidth} ${globalSvgHeight}`"
+    >
+      <path
+        :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+        :stroke-width="strokeWidth"
+        stroke="#0000ff"
+        fill="none"
+        :d="cutLinePathV2"
+      />
+    </svg>
+    <svg
+      id="fold-layer-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      :x="0"
+      :y="0"
+      :width="globalSvgWidth + 'mm'"
+      :height="globalSvgHeight + 'mm'"
+      overflow="visible"
+      :viewBox="`0 0  ${globalSvgWidth} ${globalSvgHeight}`"
+    >
+      <path
+        :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+        :stroke-width="strokeWidth"
+        stroke="#ff0000"
+        fill="none"
+        :d="foldLinePathV2"
+      ></path>
+    </svg>
+    <svg
+      v-if="false"
+      id="knife-layer-svg"
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       :x="0"
@@ -182,7 +249,7 @@ const translate = `translate(2, 2)`;
             y="0"
             :height="scienceNullWH"
             :width="scienceNullWH"
-            xlink:href="/lattice.png"
+            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADBJREFUOE9jfPn6w38GPEBMhB+fNAPjqAHDIgz+//+PNx28evMRfzoYNYCBceiHAQBcvVYJjLDNWQAAAABJRU5ErkJggg=="
           />
         </pattern>
         <pattern
@@ -210,42 +277,37 @@ const translate = `translate(2, 2)`;
         </pattern>
       </defs>
 
-      <!-- 刀线层 -->
       <svg id="knife-layer" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"
+          id="bleed-g-svg"
           v-show="layerKnife.bleedline && isShowCutline"
         >
           <path
             :stroke-width="strokeWidth"
-            stroke="#ff0000"
-            :style="{ fill: bleedFill }"
+            stroke="#00ff00"
+            fill="none"
             :d="bleedsForSvg"
           />
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-          <path
-            v-for="item in facesForSvg"
-            :key="`knifeFace_${item.name}`"
-            :id="`${name}_knifeFace_${item.name}`"
-            :data-face="item.name"
-            class="knife-face"
-            :stroke-width="
-              item.name === curFace ? activeStrokeWidth : strokeWidth
-            "
-            :fill="backgroundOfFace(item.name)"
-            :d="item.d"
-            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
-          />
-        </svg>
+
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
           <path
             :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
             :stroke-width="strokeWidth"
-            stroke="#00ff00"
+            stroke="#0000ff"
             fill="none"
             :d="cutsForSvg"
+          />
+          <path
+            v-for="(item, index) in holesForSvg"
+            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+            :key="`holes${index}`"
+            :stroke-width="strokeWidth"
+            stroke="#0000ff"
+            :style="{ fill: '#ffffff' }"
+            :d="item"
           />
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -257,50 +319,74 @@ const translate = `translate(2, 2)`;
             <line
               v-if="!item.path && !item.blank"
               :stroke-width="strokeWidth"
-              stroke="#0000ff"
-              :stroke-dasharray="dashStyle"
+              stroke="#ff0000"
               :x1="item.x1"
               :y1="item.y1"
               :x2="item.x2"
               :y2="item.y2"
             />
-            <path
+            <!-- <path
               v-if="item.path"
-              stroke="#333333"
+              stroke="#ff0000"
               :stroke-width="strokeWidth"
-              :stroke-dasharray="dashStyle"
               fill="none"
               :d="item.d"
-            />
+            /> -->
           </g>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-          <path
-            v-for="(item, index) in holesForSvg"
-            :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
-            :key="`holes${index}`"
-            :stroke-width="strokeWidth"
-            stroke="#888800"
-            :style="{ fill: '#ffffff' }"
-            :d="item"
-          />
         </svg>
       </svg>
     </svg>
     <svg id="design-layer" xmlns="http://www.w3.org/2000/svg" version="1.1">
-      <path
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        :x="0"
+        :y="0"
+        :width="globalSvgWidth + 'mm'"
+        :height="globalSvgHeight + 'mm'"
+        :viewBox="`0 0  ${globalSvgWidth} ${globalSvgHeight}`"
+      >
+        <path
+          v-for="item in facesForSvg"
+          :key="`knifeFace_${item.name}`"
+          :id="`${name}_knifeFace_${item.name}`"
+          :data-face="item.name"
+          class="knife-face"
+          :stroke-width="
+            item.name === curFace ? activeStrokeWidth : strokeWidth
+          "
+          :fill="backgroundOfFace(item.name)"
+          :d="item.d"
+          :transform="`translate(${layerKnife.bleedline}, ${layerKnife.bleedline})`"
+        />
+      </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        transform="translate(100,100)"
+      >
+        <image x="10" y="10" xlink:href="" alt="" width="117mm" height="48mm" />
+      </svg>
+    </svg>
+    <!-- 标注信息 -->
+    <svg
+      id="other-layer"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      width="600"
+      height="400"
+    >
+      <!-- <path
         id="horizontalPath"
         d="M10 50 H 490"
         fill="transparent"
         stroke="black"
       />
-
-      <!-- Add text along the horizontal path -->
       <text font-family="Verdana" font-size="24" fill="black">
         <textPath href="#horizontalPath">
           This text is written horizontally along the path!
         </textPath>
-      </text>
+      </text> -->
     </svg>
   </div>
 </template>

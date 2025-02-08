@@ -3,109 +3,93 @@ import SVGtoPDF from "./svgToPdf";
 import { getLayerKnifeData, getProjectsInfo } from "./store/index";
 import { DPI } from "./helper";
 import { useOpenType } from "./parseText";
+import { getAnnotation } from "../../../fontPaint/annotation";
 const DPIV2 = 3.7795275591;
 const PDFLayoutDPI = 2.834645669291339;
 // const DPIV2 = 2.834645669291339;
 // const DPIV2 = 1;
 const layerKnife = getLayerKnifeData();
 const MARGIN_SIDE = 30;
-const MARGIN = MARGIN_SIDE * 2;
+const TOP_MARGIN_SIDE = 100;
+const BOTTOM_MARGIN_SIDE = 30;
+const MARGIN_X = MARGIN_SIDE * 2;
+const MARGIN_Y = TOP_MARGIN_SIDE + BOTTOM_MARGIN_SIDE;
 // *DPIV2的目的是，将mm转换为pt
 const sizeWidth =
-  (layerKnife.totalX + 2 * layerKnife.bleedline + MARGIN) * PDFLayoutDPI;
+  (layerKnife.totalX + 2 * layerKnife.bleedline + MARGIN_X) * PDFLayoutDPI;
 const sizeHeight =
-  (layerKnife.totalY + 2 * layerKnife.bleedline + MARGIN) * PDFLayoutDPI;
+  (layerKnife.totalY + 2 * layerKnife.bleedline + MARGIN_Y) * PDFLayoutDPI;
 console.log("sizeWidth", sizeWidth, "sizeHeight", sizeHeight);
 
 export const useSvgPdf = (config) => {
-  const { bleedConfig, cutConfig, holesConfig, foldsConfig } = config;
-  console.log("usePdf", config);
   const { getSvg } = useOpenType();
-  function painting(doc) {
-    // 添加内容到PDF
-    // doc.text("Hello, world!");
-    // drawCut(doc, cutConfig);
-    // drawHoles(doc, holesConfig);
-    // drawFolds(doc, foldsConfig);
-    // drawBleed(doc, bleedConfig);
-    // doc.fontSize(25).text("Here is some vector graphics...", 100, 80);
-  }
-  function drawBleed(doc, config) {
-    const { path, strokeColor, strokeWidth, translate } = config;
+  async function painting(doc) {
+    // const designDataList = getProjectsInfo().design_data.filter(
+    //   (item) => item.type === "font"
+    // );
+    // const designLayer = document.querySelector("#design-layer");
+    // console.log("designDataList", designDataList);
+    // for (let i = 0; i < designDataList.length; i++) {
+    //   const designData = designDataList[i];
+    //   const textSvg = await getSvg(designData, {
+    //     DPI: DPIV2,
+    //     marginTop: 0,
+    //     marginLeft: MARGIN_SIDE,
+    //     bleedLineWidth: layerKnife.bleedline,
+    //   });
+    //   console.log("textSvg", textSvg);
+    //   designLayer.appendChild(textSvg);
+    // }
 
-    // doc
-    //   .translate(translate.x, translate.y)
-    //   .path(path)
-    //   .strokeColor(strokeColor)
-    //   .lineWidth(strokeWidth)
-    //   .stroke();
-  }
-  function drawFolds(doc, config) {
-    const { paths, strokeColor, strokeWidth, strokeDasharray } = config;
-    paths.forEach((info) => {
-      const { x1, y1, x2, y2 } = info;
-      doc
-        .strokeColor(strokeColor)
-        .lineWidth(strokeWidth)
-        .dash(strokeDasharray.length, { space: strokeDasharray.space })
-        .moveTo(x1, y1)
-        .lineTo(x2, y2)
-        .stroke()
-        .undash();
-    });
-  }
-  function drawHoles(doc, config) {
-    const { paths, strokeColor, strokeWidth, fill } = config;
-    paths.forEach((path) => {
-      doc.path(path).strokeColor(strokeColor).lineWidth(strokeWidth).stroke();
-    });
-  }
-  function drawCut(doc, config) {
-    const { path, strokeColor, strokeWidth } = config;
-    doc.path(path).strokeColor(strokeColor).lineWidth(strokeWidth).stroke();
+    // doc.addSVG(designLayer, 0, 0);
+
+    // const knifeLayerSvg = document.querySelector("#knife-layer-svg");
+    // console.log("knife-layer-svg", knifeLayerSvg);
+    // doc.addSVG(knifeLayerSvg, 0, 0);
+    // const bleedLayerSvg = document.querySelector("#bleed-layer-svg");
+    // doc.addSVG(bleedLayerSvg, 0, 0);
+    // const cutLayerSvg = document.querySelector("#cut-layer-svg");
+    // doc.addSVG(cutLayerSvg, 0, 0);
+    // const foldLayerSvg = document.querySelector("#fold-layer-svg");
+    // doc.addSVG(foldLayerSvg, 0, 0);
+
+    const otherLayer = document.querySelector("#other-layer");
+    const { svgLineTable, svgTextTable } = getAnnotation();
+    otherLayer.appendChild(svgLineTable);
+    otherLayer.appendChild(svgTextTable);
+    doc.addSVG(otherLayer, 0, 0);
+    // doc.addSVG(otherLayer, 0, -200);
   }
 
   function drawStartBefore(doc) {
     const pageWidth = doc.page.width;
     const pageHeight = doc.page.height;
     console.log("pageWidth", pageWidth, "pageHeight", pageHeight);
-    const translateX = MARGIN_SIDE * PDFLayoutDPI;
-    const translateY = MARGIN_SIDE * PDFLayoutDPI;
-    doc.translate(translateX, translateY);
+    // const translateX = MARGIN_SIDE * PDFLayoutDPI;
+    // const translateY = TOP_MARGIN_SIDE * PDFLayoutDPI;
+    // doc.translate(translateX, translateY);
   }
-  async function drawEndBefore(doc) {
-    const designDataList = getProjectsInfo().design_data.filter(
-      (item) => item.type === "font"
-    );
-    const designLayer = document.querySelector("#design-layer");
-    console.log("designDataList", designDataList);
-    for (let i = 0; i < designDataList.length; i++) {
-      const designData = designDataList[i];
-      const textSvg = await getSvg(designData, {
-        DPI: DPIV2,
-        marginTop: 0,
-        marginLeft: MARGIN_SIDE,
-        bleedLineWidth: layerKnife.bleedline,
-      });
-      console.log("textSvg", textSvg);
-      designLayer.appendChild(textSvg);
-    }
-
-    doc.addSVG(designLayer, 0, 0);
-
-    const globalSvg = document.querySelector("#globalSvg");
-    console.log("globalSvg", globalSvg);
-    doc.addSVG(globalSvg, 0, 0);
-  }
+  async function drawEndBefore(doc) {}
   function drawEnd(doc) {
     doc.end();
     console.log(doc.page.xobjects);
   }
   async function genPdf() {
     const doc = new PDFDocument({
+      // size: [sizeWidth, sizeHeight],
+      autoFirstPage: false,
+    });
+    doc.addPage({
       size: [sizeWidth, sizeHeight],
+      margins: {
+        top: 200,
+        bottom: 0,
+        left: 500,
+        right: 0,
+      },
     });
     console.log("doc", doc);
+    doc.text("Hello World");
     // 将其保存到 Blob 中
     const stream = doc.pipe(blobStream());
 
@@ -114,7 +98,7 @@ export const useSvgPdf = (config) => {
     };
     drawStartBefore(doc);
 
-    painting(doc);
+    await painting(doc);
     await drawEndBefore(doc);
     drawEnd(doc);
     // 当Blob流结束时，生成下载链接

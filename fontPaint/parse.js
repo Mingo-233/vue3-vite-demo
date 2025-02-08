@@ -51,6 +51,7 @@ function getTextPaths(fontApp, config) {
     return getVerticalTextPaths(fontApp, config);
   }
   const textArr = config.text.split("");
+
   console.log("字符拆分 en", textArr);
   const context = createWordPathContext();
   const position = {
@@ -63,6 +64,8 @@ function getTextPaths(fontApp, config) {
     width: 0,
     height: 0,
   };
+  const lineHeightRatio = config.textLineHeight / config.fontSize;
+  let lineHeightTop = 0;
   let lineHeight = 0;
   const isVertical = !!config.vertical;
   //   编辑器中的选框大小
@@ -74,7 +77,7 @@ function getTextPaths(fontApp, config) {
       settlePath(context, false);
       context.nextLine();
       // 跳过 换行字符的处理
-      i++;
+      //   i++;
       continue;
     }
     context.addWord(text);
@@ -91,7 +94,8 @@ function getTextPaths(fontApp, config) {
     const currentHeight = pathBoundingBox.y2 - pathBoundingBox.y1;
     if (currentHeight > svgSize.height) {
       svgSize.height = currentHeight;
-      lineHeight = currentHeight;
+      lineHeight = currentHeight * lineHeightRatio;
+      lineHeightTop = (lineHeight - currentHeight) / 2;
     }
     // 超出选框边界
     if (pathBoundingBox.x2 > MAX_WIDTH) {
@@ -117,7 +121,10 @@ function getTextPaths(fontApp, config) {
     );
     context.addPath(path);
     context.addAlignTransform(transform);
-    const pathTransform = `translate(0,${lineHeight * context.line})`;
+    console.log("context.line", context.line, lineHeight, lineHeightTop);
+    const translateY = lineHeight * context.line + lineHeightTop;
+
+    const pathTransform = `translate(0,${translateY})`;
     context.addTransform(pathTransform);
     context.resetWord();
     if (isBreak) {

@@ -4314,11 +4314,10 @@ var SVGtoPDF = function (doc, svg, x, y, options) {
 };
 console.log("SVGtoPDF out");
 
-// if (
-//   typeof module !== "undefined" &&
-//   module &&
-//   typeof module.exports !== "undefined"
-// ) {
-//   module.exports = SVGtoPDF;
-// }
-export default SVGtoPDF;
+if (
+  typeof module !== "undefined" &&
+  module &&
+  typeof module.exports !== "undefined"
+) {
+  module.exports = SVGtoPDF;
+}
